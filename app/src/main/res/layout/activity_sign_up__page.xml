@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SignUp_Page">
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="363dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="13dp"
+        android:layout_marginLeft="13dp"
+        android:layout_marginTop="100dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/Sign_Up_Text"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center_horizontal"
+            android:text="注册"
+            android:textSize="36sp" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/Sign_Up_Text_UserName"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@null"
+                android:ems="10"
+                android:gravity="center"
+                android:inputType="textPersonName"
+                android:text="用户名"
+                android:textSize="24sp" />
+
+            <EditText
+                android:id="@+id/Sign_Up_EditText_UserName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="请输入用户名"
+                android:inputType="textPersonName" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/Sign_Up_Text_UserPassword"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@null"
+                android:ems="10"
+                android:gravity="center"
+                android:inputType="textPersonName"
+                android:text="密码"
+                android:textSize="24sp" />
+
+            <EditText
+                android:id="@+id/Sign_Up_EditText_UserPassWord"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="请输入密码"
+                android:inputType="textPassword" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/Sign_Up_Text_UserPasswordAck"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@null"
+                android:ems="10"
+                android:gravity="center"
+                android:inputType="textPersonName"
+                android:text="确认密码"
+                android:textSize="24sp" />
+
+            <EditText
+                android:id="@+id/Sign_Up_EditText_UserPassWordAck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="请再次输入密码"
+                android:inputType="textPassword" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="180dp"
+            android:layout_height="55dp"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:id="@+id/sign_Up_Text_UserHeadImg"
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@null"
+                android:ems="10"
+                android:gravity="center|center_horizontal"
+                android:inputType="textPersonName"
+                android:text="用户头像"
+                android:textSize="24sp" />
+
+            <com.example.campusinformationplatform.RoundImageView
+                android:id="@+id/sign_Up_Img_UserHeadImg"
+                android:layout_width="55dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/add_img" />
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="363dp"
+            android:layout_height="110dp"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:id="@+id/sign_Up_Text_SecQes"
+                android:layout_width="101dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@null"
+                android:ellipsize="none"
+                android:ems="1"
+                android:gravity="center_horizontal|center_vertical"
+
+                android:text="密   保\n问   题"
+                android:textSize="24sp" />
+
+            <LinearLayout
+                android:layout_width="261dp"
+                android:layout_height="110dp"
+                android:orientation="vertical">
+
+                <Spinner
+                    android:id="@+id/Spinner_Sec"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:gravity="center_vertical" />
+
+                <EditText
+                    android:id="@+id/sign_Up_EditText_SecQes"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:hint="请输入答案"
+                    android:inputType="textPersonName"
+                    android:textSize="25sp" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/signinBt2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="160dp"
+        android:layout_marginLeft="160dp"
+        android:layout_marginTop="60dp"
+        android:text="注册"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
