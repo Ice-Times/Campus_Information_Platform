@@ -116,7 +116,7 @@
 
 
             <TextView
-                android:id="@+id/sign_Up_Text_UserHeadImg"
+                android:id="@+id/Sign_Up_Text_UserHeadImg"
                 android:layout_width="80dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -128,7 +128,7 @@
                 android:textSize="24sp" />
 
             <com.example.campusinformationplatform.RoundImageView
-                android:id="@+id/sign_Up_Img_UserHeadImg"
+                android:id="@+id/Sign_Up_Img_UserHeadImg"
                 android:layout_width="55dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -145,7 +145,7 @@
 
 
             <TextView
-                android:id="@+id/sign_Up_Text_SecQes"
+                android:id="@+id/Sign_Up_Text_SecQes"
                 android:layout_width="101dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -169,7 +169,7 @@
                     android:gravity="center_vertical" />
 
                 <EditText
-                    android:id="@+id/sign_Up_EditText_SecQes"
+                    android:id="@+id/Sign_Up_EditText_SecQes"
                     android:layout_width="match_parent"
                     android:layout_height="55dp"
                     android:layout_weight="1"
@@ -186,7 +186,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/signinBt2"
+        android:id="@+id/Sign_Up_Bt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="160dp"
