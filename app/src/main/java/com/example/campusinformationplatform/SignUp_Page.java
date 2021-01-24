@@ -22,6 +22,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,7 +40,7 @@ public class SignUp_Page extends AppCompatActivity {
     //全局变量
     private Global_Value gv;
     //网络端口
-    private int PORT=9999;
+    private int PORT = 9999;
 
     private static final int PHOTO_REQUEST_GALLERY = 2;// 从相册中选择
     private static final int PHOTO_REQUEST_CUT = 3;// 结果
@@ -75,7 +77,7 @@ public class SignUp_Page extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up__page);
 
-        gv=(Global_Value) getApplication();
+        gv = (Global_Value) getApplication();
         //gv = (Global_Value) getApplication();
         Log.d("", Cache_Temp_PATH);
 
@@ -118,45 +120,56 @@ public class SignUp_Page extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-
-//                CheckUserName();
-//                CheckUserPassword();
-//                CheckSecQes();
-
                 //对账户信息进行验证
-                if(CheckUserName()&&CheckUserPassword()&&CheckSecQes()){
+                if (CheckUserName() && CheckUserPassword() && CheckSecQes()) {
                     //验证成功，向服务器发送注册信息
-                    final String HOST= gv.getLocalhost();
+                    final String HOST = gv.getLocalhost();
                     new Thread(new Runnable() {
                         public void run() {
                             try {
-                                //String state="I";
-                                String sendmsg="";
+                                Status s=new Status();
+                                String state=s.SignUp_State;
+//                                String sendmsg = "";
+//
+//                                sendmsg = "\""+state+"\"   \"" + UserName.getText() + "\"    \""
+//                                        + UserPassword.getText() + "\"    \""
+//                                        + UserSecQes + "\"    \""
+//                                        + UserSecAns.getText() + "\"";
 
-                                sendmsg="\""+UserName.getText()+"\"    \""
-                                        +UserPassword.getText()+"\"    \""
-                                        +UserSecQes+"\"    \""
-                                        +UserSecAns.getText()+"\"";
 
-
-                                System.out.println("注册：" + sendmsg);
-
+//                                System.out.println("注册：" + sendmsg);
 
                                 Socket socket = new Socket(HOST, PORT);
 
                                 //DataOutputStream outputStream=new DataOutputStream(socket.getOutputStream());
-                                try{
+                                try {
+
+                                    //--
+
+                                    JSONObject Sending=new JSONObject();
+
+                                    Sending.put("Status", state);
+                                    Sending.put("Username", UserName.getText());
+                                    Sending.put("UserPassword", UserPassword.getText());
+                                    Sending.put("UserSecQes", UserSecQes);
+                                    Sending.put("UserSecAns", UserSecAns.getText());
+                                    String  result=Sending.toString();
+
+                                    System.out.println("注册信息：" + result);
+
+//--
+
+
+
                                     //写入文字
-                                    DataOutputStream  outputStream=new DataOutputStream(socket.getOutputStream());
-                                    outputStream.writeUTF(sendmsg);
+                                    DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
+                                    outputStream.writeUTF(result);
 
-                                    //写入图片长度
-
-
+                                    //写入图片
 
                                     FileOutputStream fos = null;
                                     try {
-                                        fos = new FileOutputStream(Cache_Temp_PATH+"temp.jpg");
+                                        fos = new FileOutputStream(Cache_Temp_PATH + "temp.jpg");
                                         User_Img.compress(Bitmap.CompressFormat.JPEG, 100, fos);
                                         fos.flush();
 
@@ -175,15 +188,15 @@ public class SignUp_Page extends AppCompatActivity {
                                     }
 
 
-                                    File Temp_Img = new File(Cache_Temp_PATH , "temp.jpg");
+                                    File Temp_Img = new File(Cache_Temp_PATH, "temp.jpg");
                                     if (!Temp_Img.exists()) {
 
-                                        Log.e("", "文件不存在" );
+                                        Log.e("", "文件不存在");
 
                                     }
 
 
-                                    Temp_Img = new File(Cache_Temp_PATH+"temp.jpg");
+                                    Temp_Img = new File(Cache_Temp_PATH + "temp.jpg");
                                     outputStream.writeLong(Temp_Img.length());
 
                                     byte[] data = new byte[(int) Temp_Img.length()];
@@ -193,30 +206,25 @@ public class SignUp_Page extends AppCompatActivity {
                                     outputStream.write(data);
 
 
-
                                     outputStream.flush();
 
                                     inputStream.close();
-
                                     outputStream.close();
                                     //writeToLocal(Cache_PATH, Ins[i]);
-
 
 
                                     //outputStream.writeLong();
 
 
-
                                     Log.d("输出到服务器完成", "66 ");
-                                }catch(Exception e){
+                                } catch (Exception e) {
                                     Log.d("输出到服务器失败", "00 ");
                                 }
 
                                 socket.close();
 
 
-
-                            }catch(Exception e){
+                            } catch (Exception e) {
                                 System.out.println("wrong");
                                 e.printStackTrace();
                             }
@@ -224,12 +232,7 @@ public class SignUp_Page extends AppCompatActivity {
                     }).start();
 
 
-
-
-
-
-                }
-                else{
+                } else {
                     return;
                 }
 
@@ -280,7 +283,7 @@ public class SignUp_Page extends AppCompatActivity {
             // 从剪切图片返回的数据
             if (data != null) {
                 Bitmap bitmap = data.getParcelableExtra("data");
-                User_Img=bitmap;
+                User_Img = bitmap;
                 Add_Image.setImageBitmap(bitmap);
 
             }
@@ -372,7 +375,6 @@ public class SignUp_Page extends AppCompatActivity {
 
         return true;
     }
-
 
 
     public void WriteToFile(String destination, InputStream input) throws IOException {
