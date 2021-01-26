@@ -68,8 +68,10 @@ public class SignUp_Page extends AppCompatActivity {
     //
     private Bitmap User_Img;
 
-    public static final String Cache_Temp_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/temp";
+    private String Cache_Temp_PATH;// = Environment.getExternalStorageDirectory().getAbsolutePath() + "/temp";
     //public String Cache_Temp_PATH= getExternalCacheDir().getAbsolutePath()+"/temp";
+
+    private String Cache_Head_Path;
 
 
     private String Sign_Up_State = null;
@@ -80,8 +82,11 @@ public class SignUp_Page extends AppCompatActivity {
 
         gv = (Global_Value) getApplication();
 
-        Log.d("", Cache_Temp_PATH);
 
+        Cache_Temp_PATH=gv.getCachePath()+"/temp";
+        Log.d("getexternalCacheDir",gv.getCachePath());
+
+        Cache_Head_Path=gv.getCachePath()+"/head";
 
         //添加用户头像
         Add_Image = (ImageView) findViewById(R.id.Sign_Up_Img_UserHeadImg);
@@ -120,7 +125,6 @@ public class SignUp_Page extends AppCompatActivity {
         Sign_Up_Bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 //对账户信息进行验证
                 if (CheckUserName() && CheckUserPassword() && CheckSecQes()) {
                     //验证成功，向服务器发送注册信息
@@ -129,7 +133,7 @@ public class SignUp_Page extends AppCompatActivity {
                     new Thread(new Runnable() {
                         public void run() {
                             try {
-  //                              Status s=new Status();
+                                //Status s=new Status();
                                 String state=Status.SignUp_State;
 //                                String sendmsg = "";
 //
@@ -160,14 +164,11 @@ public class SignUp_Page extends AppCompatActivity {
 
 //--
 
-
-
                                     //写入文字
                                     DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
                                     outputStream.writeUTF(result);
 
                                     //写入图片
-
                                     FileOutputStream fos = null;
                                     try {
                                         fos = new FileOutputStream(Cache_Temp_PATH + "temp.jpg");
@@ -188,6 +189,11 @@ public class SignUp_Page extends AppCompatActivity {
                                         }
                                     }
 
+                                    FileOutputStream fileOutputStream =
+                                            new FileOutputStream(Cache_Head_Path+UserName.getText()+".jpg");
+                                    User_Img.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+
+                                    fileOutputStream.close();
 
                                     File Temp_Img = new File(Cache_Temp_PATH, "temp.jpg");
                                     if (!Temp_Img.exists()) {
@@ -195,7 +201,6 @@ public class SignUp_Page extends AppCompatActivity {
                                         Log.e("", "文件不存在");
 
                                     }
-
 
                                     Temp_Img = new File(Cache_Temp_PATH + "temp.jpg");
                                     outputStream.writeLong(Temp_Img.length());
@@ -206,13 +211,10 @@ public class SignUp_Page extends AppCompatActivity {
 
                                     outputStream.write(data);
 
-
                                     outputStream.flush();
 
                                     inputStream.close();
                                     outputStream.close();
-
-
 
 
                                     Log.d("输出到服务器完成", "66 ");

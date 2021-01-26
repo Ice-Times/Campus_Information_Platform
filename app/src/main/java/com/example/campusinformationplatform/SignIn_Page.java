@@ -2,6 +2,7 @@ package com.example.campusinformationplatform;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
@@ -14,6 +15,7 @@ import org.json.JSONObject;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
@@ -33,6 +35,8 @@ public class SignIn_Page extends AppCompatActivity {
 
     private String Sign_In_State = null;
 
+    private String Cache_Head_Path;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +45,8 @@ public class SignIn_Page extends AppCompatActivity {
         gv = (Global_Value) getApplication();
         HOST=gv.getHost();
         PORT=gv.getPort();
+
+        Cache_Head_Path=gv.getCachePath()+"/head";
 
         UserName=(EditText)findViewById(R.id.Sign_In_EditText_UserName);
         UserPassword=(EditText)findViewById(R.id.Sign_In_EditText_UserPassWord);
@@ -119,5 +125,27 @@ public class SignIn_Page extends AppCompatActivity {
 
             }
         });
+
+
+        Button To_SignUp_Bt=(Button)findViewById(R.id.To_SignUp_Page_Bt);
+        To_SignUp_Bt.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+
+//                Intent i = new Intent(SignIn_Page.this , SignUp_Page.class);
+//                startActivity(i);
+
+                try {
+                    FileInputStream inputStream = new FileInputStream(Cache_Head_Path + "qw.jpg");
+                    inputStream.close();
+                    Log.d("", "kyky");
+                }catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+
+            }
+        });
+
+
     }
 }

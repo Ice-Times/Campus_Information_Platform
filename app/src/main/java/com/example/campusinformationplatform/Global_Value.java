@@ -8,7 +8,7 @@ public class Global_Value extends Application {
 
     public String Host;
     public int Port;
-
+    public String Cache_Path;
     @Override
     public void onCreate() {
         // TODO Auto-generated method stub
@@ -16,6 +16,8 @@ public class Global_Value extends Application {
 
         this.Host="192.168.31.139";
         this.Port=9999;
+        Cache_Path=this.getExternalCacheDir().getPath();
+
     }
 
     public void setHost(String localhost) {
@@ -27,10 +29,16 @@ public class Global_Value extends Application {
     }
 
     public  void setPort(int Port){
+
         this.Port=Port;
     }
 
     public int getPort(){
+
         return Port;
+    }
+
+    public String getCachePath(){
+        return Cache_Path;
     }
 }
