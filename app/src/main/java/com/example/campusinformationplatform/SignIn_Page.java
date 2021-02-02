@@ -58,6 +58,7 @@ public class SignIn_Page extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                /*
                 new Thread(new Runnable() {
                     public void run() {
                         try {
@@ -123,7 +124,17 @@ public class SignIn_Page extends AppCompatActivity {
 
                 }).start();
 
+                 */
+
+                Intent i = new Intent(SignIn_Page.this , Main_Page.class);
+                startActivity(i);
+
+
             }
+
+
+
+
         });
 
 
