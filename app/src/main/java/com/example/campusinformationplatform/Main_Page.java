@@ -6,7 +6,10 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -31,6 +34,21 @@ public class Main_Page extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
+        Button To_Release_Page=(Button) findViewById(R.id.To_Release_Page_Bt);
+
+        //跳转到发布页面
+        To_Release_Page.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Main_Page.this , Release_Page.class);
+                startActivity(i);
+
+            }
+
+
+
+
+        });
 
     }
 }

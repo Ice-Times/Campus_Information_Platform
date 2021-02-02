@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Release_Page">
+
+    <LinearLayout
+        android:layout_width="409dp"
+        android:layout_height="729dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginLeft="1dp"
+        android:layout_marginTop="1dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textView_cate"
+            android:layout_width="match_parent"
+            android:layout_height="37dp"
+            android:gravity="center"
+            android:text="请选择类别"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="37dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/cb1"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="二手交易" />
+
+            <CheckBox
+                android:id="@+id/cb2"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="失物招领" />
+
+            <CheckBox
+                android:id="@+id/cb3"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="寻物启事" />
+
+            <CheckBox
+                android:id="@+id/cb4"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="其他" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="37dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/Release_Title_Textview"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="标题"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/Release_Title_EditTextview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="textPersonName" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/Release_Describe_EditTextview"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left|top"
+                android:minLines="5"
+                android:hint="请输入描述"/>
+
+            <GridView
+                android:id="@+id/Release_Img_GridView"
+                android:layout_width="match_parent"
+
+                android:layout_height="wrap_content"
+                android:columnWidth="10dp"
+                android:numColumns="3">
+
+            </GridView>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
