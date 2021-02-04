@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:layout_width="409dp"
-        android:layout_height="729dp"
+        android:layout_height="0dp"
         android:layout_marginStart="1dp"
         android:layout_marginLeft="1dp"
         android:layout_marginTop="1dp"
@@ -77,7 +77,7 @@
             <EditText
                 android:id="@+id/Release_Title_EditTextview"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:ems="10"
                 android:inputType="textPersonName" />
@@ -93,16 +93,15 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="left|top"
-                android:minLines="5"
-                android:hint="请输入描述"/>
+                android:hint="请输入描述"
+                android:minLines="5" />
 
             <GridView
                 android:id="@+id/Release_Img_GridView"
                 android:layout_width="match_parent"
-
                 android:layout_height="wrap_content"
-                android:columnWidth="10dp"
-                android:numColumns="3">
+                android:numColumns="3"
+                android:verticalSpacing="5dp">
 
             </GridView>
 
