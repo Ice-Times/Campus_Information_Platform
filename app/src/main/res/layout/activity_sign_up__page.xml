@@ -111,16 +111,15 @@
 
 
         <LinearLayout
-            android:layout_width="180dp"
+            android:layout_width="wrap_content"
             android:layout_height="55dp"
             android:orientation="horizontal">
 
 
             <TextView
                 android:id="@+id/Sign_Up_Text_UserHeadImg"
-                android:layout_width="80dp"
+                android:layout_width="100dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
                 android:background="@null"
                 android:ems="10"
                 android:gravity="center|center_horizontal"
@@ -132,8 +131,8 @@
                 android:id="@+id/Sign_Up_Img_UserHeadImg"
                 android:layout_width="55dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:src="@drawable/add_img" />
+                android:layout_marginLeft="12dp"
+                android:background="@mipmap/add_round_img" />
 
 
         </LinearLayout>

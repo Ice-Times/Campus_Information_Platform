@@ -8,18 +8,20 @@
 
     <ScrollView
         android:id="@+id/scrollview"
-        android:layout_width="409dp"
+        android:layout_width="390dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="7dp"
+        android:layout_marginLeft="7dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
 
         <LinearLayout
-            android:layout_width="409dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="1dp"
-            android:layout_marginLeft="1dp"
+            android:layout_marginLeft="5dp"
             android:layout_marginTop="1dp"
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
@@ -28,10 +30,10 @@
             <TextView
                 android:id="@+id/textView_cate"
                 android:layout_width="match_parent"
-                android:layout_height="37dp"
+                android:layout_height="39dp"
                 android:gravity="center"
                 android:text="请选择类别"
-                android:textSize="18sp" />
+                android:textSize="20sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -81,7 +83,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="标题"
-                    android:textSize="18sp" />
+                    android:textSize="19sp" />
 
                 <EditText
                     android:id="@+id/Release_Title_EditTextview"
@@ -100,17 +102,29 @@
 
                 <EditText
                     android:id="@+id/Release_Describe_EditTextview"
+                    style="@android:style/Widget.Holo.EditText"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
+                    android:background="#00FFFFFF"
                     android:gravity="left|top"
                     android:hint="请输入描述"
                     android:minLines="5" />
+
+                <TextView
+                    android:id="@+id/Release_WordCount_Textview"
+                    android:layout_width="60dp"
+                    android:layout_height="22dp"
+                    android:layout_marginLeft="320dp"
+                    android:gravity="center"
+                    android:textSize="13sp" />
 
                 <GridView
                     android:id="@+id/Release_Img_GridView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:isScrollContainer="false"
                     android:numColumns="3"
+                    android:overScrollMode="never"
                     android:verticalSpacing="5dp">
 
                 </GridView>
@@ -133,9 +147,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
         </LinearLayout>
-
 
 
     </ScrollView>

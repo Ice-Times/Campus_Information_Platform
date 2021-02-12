@@ -17,9 +17,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -31,6 +34,7 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -73,10 +77,14 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
     private EditText title_Edittext;
     private EditText describe_Edittext;
     private CheckBox[] checkBoxes=new CheckBox[4];
+    private TextView WordCount;
 
 
     //缓存
     private String Cache_Temp_PATH;
+
+    //描述中最大输入字数
+    private int MaxInputWords = 50;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +99,8 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
         title_Edittext=(EditText)findViewById(R.id.Release_Title_EditTextview);
         describe_Edittext=(EditText)findViewById(R.id.Release_Describe_EditTextview);
 
+        WordCount=(TextView)findViewById(R.id.Release_WordCount_Textview);
+
         checkBoxes[0] = (CheckBox) findViewById(R.id.cb1);//二手交易
         checkBoxes[1] = (CheckBox) findViewById(R.id.cb2);//失物招领
         checkBoxes[2] = (CheckBox) findViewById(R.id.cb3);//寻物启事
@@ -102,11 +112,68 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
         checkBoxes[3].setOnCheckedChangeListener(this);
 
 
+        describe_Edittext.addTextChangedListener(new TextWatcher() {
+            private CharSequence wordNum;//记录输入的字数
+            private int selectionStart;
+            private int selectionEnd;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                wordNum= s;//实时记录输入的字数
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                //当前字数
+                int number = s.length();
+
+                //TextView显示剩余字数
+                selectionStart=describe_Edittext.getSelectionStart();
+                selectionEnd = describe_Edittext.getSelectionEnd();
+                WordCount.setText("" + number+"/"+MaxInputWords);
+
+                if(wordNum.length() == MaxInputWords){
+                    WordCount.setTextColor(android.graphics.Color.RED);
+                }
+                else{
+                    WordCount.setTextColor(android.graphics.Color.rgb(156, 156, 156));
+                }
+
+
+                if (wordNum.length() > MaxInputWords) {
+                    WordCount.setTextColor(android.graphics.Color.RED);
+                    //删除多余输入的字（不会显示出来）
+                    s.delete(selectionStart - 1, selectionEnd);
+                    int tempSelection = selectionEnd;
+                    describe_Edittext.setText(s);
+                    describe_Edittext.setSelection(tempSelection);//设置光标在最后
+                }
+
+            }
+        });
+
+
 
         BitmapList.add(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.add_img2),
                 gridImgViewSize,gridImgViewSize, true));//类型的转换);
         gridImgView = (GridView) findViewById(R.id.Release_Img_GridView);
         gridImgView.setAdapter(new MyAdapter(this,BitmapList));
+
+        gridImgView.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return MotionEvent.ACTION_MOVE == event.getAction() ? true
+                        : false;
+            }
+        });
+
 
         gridImgView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -132,8 +199,8 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
 
                                 gv.setEnlargeImage(EnlargeImage);
 
-                                Intent i = new Intent(Release_Page.this , EnlargeImg_Page.class);
-                                startActivity(i);
+//                                Intent i = new Intent(Release_Page.this , EnlargeImg_Page.class);
+//                                startActivity(i);
 
                             }else if(clickNum==2){//双击,删除图片
 
@@ -321,9 +388,10 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
                 BitmapList.add(BitmapList.size()-1,showPic);
                 //BitmapList.add(showPic);
 
+
                 gridImgView.setAdapter(new MyAdapter(this,BitmapList));
 
-
+                setListViewHeightBasedOnChildren(gridImgView);
 
 
             }
@@ -481,5 +549,35 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
             }
         }
     }
+
+    public static void setListViewHeightBasedOnChildren(GridView listView) {
+        // 获取listview的adapter
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+            return;
+        }
+        // 固定列宽，有多少列
+        int col = 3;// listView.getNumColumns();
+        int totalHeight = 0;
+        // i每次加4，相当于listAdapter.getCount()小于等于4时 循环一次，计算一次item的高度，
+        // listAdapter.getCount()小于等于8时计算两次高度相加
+        for (int i = 0; i < listAdapter.getCount(); i += col) {
+            // 获取listview的每一个item
+            View listItem = listAdapter.getView(i, null, listView);
+            listItem.measure(0, 0);
+            // 获取item的高度和
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        // 获取listview的布局参数
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        // 设置高度
+        params.height = totalHeight;
+        // 设置margin
+        ((ViewGroup.MarginLayoutParams) params).setMargins(10, 10, 10, 10);
+        // 设置参数
+        listView.setLayoutParams(params);
+    }
+
 
 }
