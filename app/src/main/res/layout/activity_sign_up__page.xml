@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background1"
     tools:context=".SignUp_Page">
 
 
@@ -13,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="13dp"
         android:layout_marginLeft="13dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="90dp"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -21,7 +22,7 @@
         <TextView
             android:id="@+id/Sign_Up_Text"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="80dp"
             android:gravity="center_horizontal"
             android:text="注册"
             android:textSize="36sp" />
@@ -176,7 +177,7 @@
                     android:ems="10"
                     android:hint="请输入答案"
                     android:inputType="textPersonName"
-                    android:textSize="25sp" />
+                    android:textSize="18sp" />
             </LinearLayout>
 
 
@@ -187,12 +188,13 @@
 
     <Button
         android:id="@+id/Sign_Up_Bt"
-        android:layout_width="wrap_content"
+        android:layout_width="230dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="160dp"
-        android:layout_marginLeft="160dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="68dp"
+        android:background="@drawable/button_transparent"
         android:text="注册"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 

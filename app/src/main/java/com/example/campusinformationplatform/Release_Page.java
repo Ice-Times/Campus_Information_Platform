@@ -24,24 +24,43 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Release_Page extends AppCompatActivity {
+public class Release_Page extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
 
     //private int[] images = {R.drawable.add_img2,};
 
+    private Global_Value gv;
+
+    private String HOST;
+    private int PORT;
+
     private List<Bitmap> BitmapList = new ArrayList<Bitmap>();
     private List<Bitmap> SendingImgList = new ArrayList<Bitmap>();
+
+    private ArrayList<Uri> EnlargeImage = new ArrayList<Uri>();
 
     private GridView gridImgView;
 
@@ -50,10 +69,37 @@ public class Release_Page extends AppCompatActivity {
     int clickNum=0;
 
     private AlertDialog.Builder builder;
+
+    private EditText title_Edittext;
+    private EditText describe_Edittext;
+    private CheckBox[] checkBoxes=new CheckBox[4];
+
+
+    //缓存
+    private String Cache_Temp_PATH;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_release__page);
+
+        gv = (Global_Value) getApplication();
+        HOST=gv.getHost();
+        PORT=gv.getPort();
+
+        Cache_Temp_PATH=gv.getCachePath()+"/temp";
+
+        title_Edittext=(EditText)findViewById(R.id.Release_Title_EditTextview);
+        describe_Edittext=(EditText)findViewById(R.id.Release_Describe_EditTextview);
+
+        checkBoxes[0] = (CheckBox) findViewById(R.id.cb1);//二手交易
+        checkBoxes[1] = (CheckBox) findViewById(R.id.cb2);//失物招领
+        checkBoxes[2] = (CheckBox) findViewById(R.id.cb3);//寻物启事
+        checkBoxes[3] = (CheckBox) findViewById(R.id.cb4);//其他
+
+        checkBoxes[0].setOnCheckedChangeListener(this);
+        checkBoxes[1].setOnCheckedChangeListener(this);
+        checkBoxes[2].setOnCheckedChangeListener(this);
+        checkBoxes[3].setOnCheckedChangeListener(this);
 
 
 
@@ -81,10 +127,16 @@ public class Release_Page extends AppCompatActivity {
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            if (clickNum == 1) {//单击
+                            if (clickNum == 1) {//单击,放大图片
                                 Log.d("", "单击");
 
-                            }else if(clickNum==2){//双击
+                                gv.setEnlargeImage(EnlargeImage);
+
+                                Intent i = new Intent(Release_Page.this , EnlargeImg_Page.class);
+                                startActivity(i);
+
+                            }else if(clickNum==2){//双击,删除图片
+
                                 Log.d("", "双击");
 
                                 showWhetheOrNotToDeleteImg(position);
@@ -105,7 +157,121 @@ public class Release_Page extends AppCompatActivity {
             }
         });
 
+        Button Release_Bt=(Button)findViewById(R.id.Release_Bt);
+        Release_Bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("", "发布");
+                new Thread(new Runnable() {
+                    public void run() {
+                        try{
 
+                            String title=title_Edittext.getText().toString();
+                            String describe=describe_Edittext.getText().toString();
+                            String checkBoxName="";
+
+                            for(int i=0;i<checkBoxes.length;i++)
+                            {
+                                if(checkBoxes[i].isChecked())
+                                {
+                                    if(i==0)
+                                        checkBoxName="二手交易";
+                                    else if(i==1)
+                                        checkBoxName="失物招领";
+                                    else
+                                        checkBoxName="寻物启事";
+
+
+                                }
+
+                            }
+
+                            Socket socket = new Socket(HOST, PORT);
+
+                            String state=Status.Release_State;
+
+                            try {
+                                JSONObject Sending=new JSONObject();
+                                Sending.put("UserName", "ice");
+                                Sending.put("Status", state);
+                                Sending.put("Type", checkBoxName);
+                                Sending.put("Title", title);
+                                Sending.put("Describe", describe);
+                                Sending.put("NumOfImg", String.valueOf(SendingImgList.size()));
+
+                                String  result=Sending.toString();
+
+                                //写入文字
+                                DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
+                                outputStream.writeUTF(result);
+
+                                //传输图片
+                                for(int i=0;i<SendingImgList.size();i++){
+
+                                    FileOutputStream fos = null;
+                                    try {
+                                        fos = new FileOutputStream(Cache_Temp_PATH +String.valueOf(i)+".jpg");
+                                        SendingImgList.get(i).compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                                        fos.flush();
+
+                                    } catch (FileNotFoundException e) {
+                                        e.printStackTrace();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    } finally {
+                                        try {
+                                            if (fos != null) {
+                                                fos.close();
+                                            }
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+
+                                    File Temp_Img = new File(Cache_Temp_PATH+String.valueOf(i)+".jpg");
+                                    if (!Temp_Img.exists()) {
+
+                                        Log.e("", String.valueOf(i)+".jpg"+"不存在");
+
+                                    }
+
+                                   // Temp_Img = new File(Cache_Temp_PATH + String.valueOf(i)+".jpg");
+                                    outputStream.writeLong(Temp_Img.length());
+                                    byte[] data = new byte[(int) Temp_Img.length()];
+                                    FileInputStream inputStream = new FileInputStream(Temp_Img);
+                                    inputStream.read(data);
+
+                                    outputStream.write(data);
+                                    inputStream.close();
+
+
+                                }
+
+
+                                outputStream.flush();
+                                outputStream.close();
+
+
+
+                            }catch(Exception e){
+                                System.out.println("发送异常");
+                                e.printStackTrace();
+                            }
+
+                            socket.close();
+
+                        }catch(Exception e){
+                            System.out.println("发送异常");
+                            e.printStackTrace();
+                        }
+
+
+
+
+                    }
+                }).start();
+            }
+        });
 
     }
 
@@ -122,10 +288,15 @@ public class Release_Page extends AppCompatActivity {
                 options.inSampleSize = 2;
                 Bitmap bitmap_Pic = BitmapFactory.decodeFile(getRealFilePath(this, uri), options);
 
-                if(SendingImgList.size()==0)
+
+
+                EnlargeImage.add(uri);
+
+
+                //if(SendingImgList.size()==0)
                     SendingImgList.add(bitmap_Pic);
-                else
-                    SendingImgList.add(SendingImgList.size()-1,bitmap_Pic);
+//                else
+//                    SendingImgList.add(SendingImgList.size()-1,bitmap_Pic);
 
                 System.out.println("bitmap_Pic H:"+String.valueOf( bitmap_Pic.getHeight()));
                 System.out.println("bitmap_Pic W:"+String.valueOf( bitmap_Pic.getWidth()));
@@ -295,5 +466,20 @@ public class Release_Page extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+        Log.d("111", "onCheckedChanged: ");
+        if(b) {
+            for (int i = 0; i < checkBoxes.length; i++) {
+                //不等于当前选中的就变成false
+                if (checkBoxes[i].getText().toString().equals(compoundButton.getText().toString())) {
+                    checkBoxes[i].setChecked(true);
+                } else {
+                    checkBoxes[i].setChecked(false);
+                }
+            }
+        }
+    }
 
 }

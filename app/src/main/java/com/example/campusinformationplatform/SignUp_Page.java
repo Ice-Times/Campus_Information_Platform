@@ -6,10 +6,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Looper;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -73,6 +75,8 @@ public class SignUp_Page extends AppCompatActivity {
 
     private String Cache_Head_Path;
 
+    Uri imageUri;
+
 
     private String Sign_Up_State = null;
     @Override
@@ -83,10 +87,16 @@ public class SignUp_Page extends AppCompatActivity {
         gv = (Global_Value) getApplication();
 
 
-        Cache_Temp_PATH=gv.getCachePath()+"/temp";
-        Log.d("getexternalCacheDir",gv.getCachePath());
+        Cache_Temp_PATH=gv.getCachePath()+"/temp/";
+        Log.d("getexternalCacheDir",Cache_Temp_PATH);
 
-        Cache_Head_Path=gv.getCachePath()+"/head";
+        Cache_Head_Path=gv.getCachePath()+"/head/";
+
+        //隐藏标题栏
+        if (getSupportActionBar() != null){
+            getSupportActionBar().hide();
+        }
+
 
         //添加用户头像
         Add_Image = (ImageView) findViewById(R.id.Sign_Up_Img_UserHeadImg);
@@ -287,12 +297,15 @@ public class SignUp_Page extends AppCompatActivity {
         intent.putExtra("aspectX", 1);
         intent.putExtra("aspectY", 1);
         // 裁剪后输出图片的尺寸大小
-        intent.putExtra("outputX", 55);
-        intent.putExtra("outputY", 55);
-        //intent.putExtra(MediaStore.EXTRA_OUTPUT, "");//输出路径
+        intent.putExtra("outputX", 550);
+        intent.putExtra("outputY", 550);
+        imageUri = Uri.parse("file://" + "/" + Environment.getExternalStorageDirectory().getPath() + "/" + System.currentTimeMillis()+".jpg");
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);//输出路径
         intent.putExtra("outputFormat", "JPEG");// 图片格式
         intent.putExtra("noFaceDetection", true);// 取消人脸识别
-        intent.putExtra("return-data", true);
+        //intent.putExtra("return-data", true);
+
+        intent.putExtra("return-data", false);
 
 
         startActivityForResult(intent, PHOTO_REQUEST_CUT);
@@ -312,9 +325,16 @@ public class SignUp_Page extends AppCompatActivity {
         } else if (requestCode == PHOTO_REQUEST_CUT) {
             // 从剪切图片返回的数据
             if (data != null) {
-                Bitmap bitmap = data.getParcelableExtra("data");
-                User_Img = bitmap;
-                Add_Image.setImageBitmap(bitmap);
+                //Bitmap bitmap = data.getParcelableExtra("data");
+
+                Bitmap bitmap= null;
+                try {
+                    bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
+                    User_Img = bitmap;
+                    Add_Image.setImageBitmap(bitmap);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
 
             }
 

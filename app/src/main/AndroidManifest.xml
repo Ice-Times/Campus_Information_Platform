@@ -17,8 +17,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".Release_Page"></activity>
+        android:theme="@style/AppTheme"
+        android:hardwareAccelerated="false">
+        <activity android:name=".EnlargeImg_Page"></activity>
+        <activity android:name=".Release_Page" />
         <activity android:name=".Main_Page" />
         <activity android:name=".SignIn_Page">
             <intent-filter>

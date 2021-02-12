@@ -4,15 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background1"
     tools:context=".SignIn_Page">
 
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="363dp"
-        android:layout_height="163dp"
+        android:layout_height="0dp"
         android:layout_marginStart="13dp"
         android:layout_marginLeft="13dp"
-        android:layout_marginTop="140dp"
+        android:layout_marginTop="90dp"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -20,7 +21,7 @@
         <TextView
             android:id="@+id/Sign_In_Text"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="80dp"
             android:gravity="center_horizontal"
             android:text="登录"
             android:textSize="36sp" />
@@ -82,27 +83,29 @@
 
     <Button
         android:id="@+id/Sign_In_Bt"
-        android:layout_width="wrap_content"
+        android:layout_width="230dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="104dp"
-        android:layout_marginLeft="104dp"
-        android:layout_marginTop="39dp"
+        android:layout_marginTop="50dp"
 
+        android:background="@drawable/button_transparent"
         android:text="登录"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
     <Button
         android:id="@+id/To_SignUp_Page_Bt"
-        android:layout_width="wrap_content"
+        android:layout_width="230dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="47dp"
-        android:layout_marginLeft="47dp"
-        android:layout_marginTop="39dp"
 
+        android:layout_marginTop="28dp"
+        android:background="@drawable/button_transparent"
         android:text="注册"
-        app:layout_constraintStart_toEndOf="@+id/Sign_In_Bt"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Sign_In_Bt" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

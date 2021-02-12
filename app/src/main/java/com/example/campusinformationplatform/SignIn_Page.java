@@ -46,7 +46,7 @@ public class SignIn_Page extends AppCompatActivity {
         HOST=gv.getHost();
         PORT=gv.getPort();
 
-        Cache_Head_Path=gv.getCachePath()+"/head";
+        Cache_Head_Path=gv.getCachePath()+"/head/";
 
         UserName=(EditText)findViewById(R.id.Sign_In_EditText_UserName);
         UserPassword=(EditText)findViewById(R.id.Sign_In_EditText_UserPassWord);
@@ -146,13 +146,17 @@ public class SignIn_Page extends AppCompatActivity {
 //                Intent i = new Intent(SignIn_Page.this , SignUp_Page.class);
 //                startActivity(i);
 
-                try {
-                    FileInputStream inputStream = new FileInputStream(Cache_Head_Path + "qw.jpg");
-                    inputStream.close();
-                    Log.d("", "kyky");
-                }catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+//                try {
+////                    FileInputStream inputStream = new FileInputStream(Cache_Head_Path + "qw.jpg");
+////                    inputStream.close();
+////                    Log.d("", "kyky");
+////                }catch (IOException ex) {
+////                    ex.printStackTrace();
+////                }
+
+
+                Intent i = new Intent(SignIn_Page.this , SignUp_Page.class);
+                startActivity(i);
 
             }
         });

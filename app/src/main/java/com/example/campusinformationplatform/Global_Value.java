@@ -1,7 +1,11 @@
 package com.example.campusinformationplatform;
 
 import android.app.Application;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.util.Log;
+
+import java.util.ArrayList;
 
 
 public class Global_Value extends Application {
@@ -9,6 +13,9 @@ public class Global_Value extends Application {
     public String Host;
     public int Port;
     public String Cache_Path;
+
+    public ArrayList<Uri> EnlargeImage;
+
     @Override
     public void onCreate() {
         // TODO Auto-generated method stub
@@ -17,6 +24,8 @@ public class Global_Value extends Application {
         this.Host="192.168.31.139";
         this.Port=9999;
         Cache_Path=this.getExternalCacheDir().getPath();
+
+        EnlargeImage=new ArrayList<Uri>();
 
     }
 
@@ -40,5 +49,15 @@ public class Global_Value extends Application {
 
     public String getCachePath(){
         return Cache_Path;
+    }
+
+    public ArrayList<Uri> getEnlargeImage(){
+
+        return getEnlargeImage();
+    }
+
+    public void setEnlargeImage(ArrayList<Uri> EnlargeImage){
+
+        this.EnlargeImage=(ArrayList<Uri>)EnlargeImage.clone();
     }
 }
