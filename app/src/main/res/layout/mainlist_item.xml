@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/Item_Type"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:gravity="center"
+        android:text="Type"
+        android:textSize="18sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal">
+
+        <com.example.campusinformationplatform.RoundImageView
+            android:id="@+id/Item_UserHeadImg"
+            android:layout_width="30dp"
+            android:layout_height="30dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/Item_UserName"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:text="UserName" />
+
+            <TextView
+                android:id="@+id/Item_ReleaseDate"
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:text="TextView"
+                android:textSize="7sp" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/Item_Describe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Describe" />
+
+        <ImageView
+            android:id="@+id/Item_PicRelease"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+    </LinearLayout>
+
+
+</LinearLayout>

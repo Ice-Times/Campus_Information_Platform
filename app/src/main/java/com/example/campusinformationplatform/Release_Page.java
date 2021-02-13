@@ -84,7 +84,7 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
     private String Cache_Temp_PATH;
 
     //描述中最大输入字数
-    private int MaxInputWords = 50;
+    private int MaxInputWords = 500;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
