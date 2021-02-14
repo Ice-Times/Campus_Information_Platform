@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
 
+import java.io.File;
 import java.util.ArrayList;
 
 
@@ -13,6 +14,11 @@ public class Global_Value extends Application {
     public String Host;
     public int Port;
     public String Cache_Path;
+    public String Cache_Head_Path;
+    public String Cache_Temp_PATH;
+
+
+    public String UserName;
 
     public ArrayList<Uri> EnlargeImage;
 
@@ -24,6 +30,28 @@ public class Global_Value extends Application {
         this.Host="192.168.31.139";
         this.Port=9999;
         Cache_Path=this.getExternalCacheDir().getPath();
+
+        Cache_Head_Path=Cache_Path+"/head/";
+        Cache_Temp_PATH=Cache_Path+"/temp/";
+
+        try {
+            File destDir = new File(Cache_Head_Path);
+            if (!destDir.exists()) {
+                destDir.mkdirs();
+            }
+
+            destDir = new File(Cache_Temp_PATH);
+            if (!destDir.exists()) {
+                destDir.mkdirs();
+            }
+
+            Log.d("", "创建成功");
+
+            UserName="";
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
         EnlargeImage=new ArrayList<Uri>();
 
@@ -51,13 +79,28 @@ public class Global_Value extends Application {
         return Cache_Path;
     }
 
-    public ArrayList<Uri> getEnlargeImage(){
+    public String getCache_Head_Path(){
+        return Cache_Head_Path;
+    }
 
+    public String getCache_Temp_PATH() {
+        return Cache_Temp_PATH;
+    }
+
+    public ArrayList<Uri> getEnlargeImage(){
         return getEnlargeImage();
     }
 
     public void setEnlargeImage(ArrayList<Uri> EnlargeImage){
 
         this.EnlargeImage=(ArrayList<Uri>)EnlargeImage.clone();
+    }
+
+    public void setUserName(String UserName){
+
+        this.UserName=UserName;
+    }
+    public String getUserName(){
+        return UserName;
     }
 }

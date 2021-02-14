@@ -87,10 +87,10 @@ public class SignUp_Page extends AppCompatActivity {
         gv = (Global_Value) getApplication();
 
 
-        Cache_Temp_PATH=gv.getCachePath()+"/temp/";
+        Cache_Temp_PATH=gv.getCache_Temp_PATH();
         Log.d("getexternalCacheDir",Cache_Temp_PATH);
 
-        Cache_Head_Path=gv.getCachePath()+"/head/";
+        Cache_Head_Path=gv.getCache_Head_Path();
 
         //隐藏标题栏
         if (getSupportActionBar() != null){
@@ -199,15 +199,10 @@ public class SignUp_Page extends AppCompatActivity {
                                         }
                                     }
 
-                                    FileOutputStream fileOutputStream =
-                                            new FileOutputStream(Cache_Head_Path+UserName.getText()+".jpg");
-                                    User_Img.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
 
-                                    fileOutputStream.close();
 
                                     File Temp_Img = new File(Cache_Temp_PATH, "temp.jpg");
                                     if (!Temp_Img.exists()) {
-
                                         Log.e("", "文件不存在");
 
                                     }
@@ -254,8 +249,20 @@ public class SignUp_Page extends AppCompatActivity {
                                 socket.close();
 
                                 Looper.prepare();//增加部分
-                                if(Sign_Up_State.equals(Status.Re_SignUp_Success))
+                                if(Sign_Up_State.equals(Status.Re_SignUp_Success)){
+                                    //将用户头像存入cache
+                                    FileOutputStream fileOutputStream =
+                                            new FileOutputStream(Cache_Head_Path+UserName.getText()+".jpg");
+                                    User_Img.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+                                    fileOutputStream.close();
+
+                                    File ok=new File(Cache_Head_Path+UserName.getText()+".jpg");
+                                    if(ok.exists()){
+                                        Log.d("file exist", "用户 "+UserName+" 头像已存入cache");
+                                    }
+
                                     Show_SignUp_Success();
+                                }
                                 else if(Sign_Up_State.equals(Status.Re_SignUp_UserName_Repeat_Err))
                                     Show_SignUp_Err1();
                                 else
@@ -297,8 +304,8 @@ public class SignUp_Page extends AppCompatActivity {
         intent.putExtra("aspectX", 1);
         intent.putExtra("aspectY", 1);
         // 裁剪后输出图片的尺寸大小
-        intent.putExtra("outputX", 550);
-        intent.putExtra("outputY", 550);
+        intent.putExtra("outputX", 150);
+        intent.putExtra("outputY", 150);
         imageUri = Uri.parse("file://" + "/" + Environment.getExternalStorageDirectory().getPath() + "/" + System.currentTimeMillis()+".jpg");
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);//输出路径
         intent.putExtra("outputFormat", "JPEG");// 图片格式

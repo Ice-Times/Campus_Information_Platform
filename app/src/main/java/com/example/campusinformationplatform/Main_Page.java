@@ -12,8 +12,12 @@ import android.view.View;
 import android.widget.Button;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
 public class Main_Page extends AppCompatActivity {
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +40,13 @@ public class Main_Page extends AppCompatActivity {
 
         Button To_Release_Page=(Button) findViewById(R.id.To_Release_Page_Bt);
 
+
+
+
+
+
+
+
         //跳转到发布页面
         To_Release_Page.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,6 +60,10 @@ public class Main_Page extends AppCompatActivity {
 
 
         });
+
+
+
+
 
     }
 }

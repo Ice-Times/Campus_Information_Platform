@@ -46,7 +46,7 @@ public class SignIn_Page extends AppCompatActivity {
         HOST=gv.getHost();
         PORT=gv.getPort();
 
-        Cache_Head_Path=gv.getCachePath()+"/head/";
+        Cache_Head_Path=gv.getCache_Head_Path();
 
         UserName=(EditText)findViewById(R.id.Sign_In_EditText_UserName);
         UserPassword=(EditText)findViewById(R.id.Sign_In_EditText_UserPassWord);
@@ -126,6 +126,7 @@ public class SignIn_Page extends AppCompatActivity {
 
                  */
 
+                gv.setUserName("ice");
                 Intent i = new Intent(SignIn_Page.this , Main_Page.class);
                 startActivity(i);
 
