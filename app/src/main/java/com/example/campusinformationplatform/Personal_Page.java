@@ -23,7 +23,8 @@ public class Personal_Page  extends Fragment {
         gv = (Global_Value) getActivity().getApplication();
         Cache_Head_Path=gv.getCache_Head_Path();
 
-
+        System.out.println("进入person");
+        view.setClickable(true);
 
         return view;
     }

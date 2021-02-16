@@ -8,20 +8,20 @@
     <TextView
         android:id="@+id/Item_Type"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="35dp"
         android:gravity="center"
         android:text="Type"
-        android:textSize="18sp" />
+        android:textSize="22sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="45dp"
         android:orientation="horizontal">
 
         <com.example.campusinformationplatform.RoundImageView
             android:id="@+id/Item_UserHeadImg"
-            android:layout_width="30dp"
-            android:layout_height="30dp" />
+            android:layout_width="45dp"
+            android:layout_height="45dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -31,15 +31,16 @@
             <TextView
                 android:id="@+id/Item_UserName"
                 android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:text="UserName" />
+                android:layout_height="27dp"
+                android:text="UserName"
+                android:textSize="19sp" />
 
             <TextView
                 android:id="@+id/Item_ReleaseDate"
                 android:layout_width="match_parent"
-                android:layout_height="10dp"
+                android:layout_height="18dp"
                 android:text="TextView"
-                android:textSize="7sp" />
+                android:textSize="13sp" />
         </LinearLayout>
 
 
@@ -54,7 +55,8 @@
             android:id="@+id/Item_Describe"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Describe" />
+            android:text="Describe"
+            android:textSize="17sp" />
 
         <ImageView
             android:id="@+id/Item_PicRelease"

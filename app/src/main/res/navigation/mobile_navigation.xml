@@ -3,18 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_dashboard">
-
+    app:startDestination="@+id/navigation_information">
 
 
     <fragment
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/navigation_information"
         android:name="com.example.campusinformationplatform.Information_Page"
         android:label="信息平台"
         tools:layout="@layout/activity_information_page" />
 
+
     <fragment
-        android:id="@+id/navigation_home"
+        android:id="@+id/navigation_personal"
         android:name="com.example.campusinformationplatform.Personal_Page"
         android:label="用户信息"
         tools:layout="@layout/activity_personal_page" />
