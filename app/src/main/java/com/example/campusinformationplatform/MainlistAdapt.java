@@ -77,7 +77,8 @@ public class MainlistAdapt extends BaseAdapter {
         zj.MainpageUsername.setText((String) listItem.get(position).get("UserName"));
         zj.MainpageReleasedate.setText((String) listItem.get(position).get("ReleaseDate"));
         zj.MainpageDescribe.setText((String) listItem.get(position).get("Describe"));
-        zj.MainpagePicrelease.setImageBitmap((Bitmap) listItem.get(position).get("Picrelease"));
+        if(listItem.get(position).get("Picrelease")!=null)
+            zj.MainpagePicrelease.setImageBitmap((Bitmap) listItem.get(position).get("Picrelease"));
 
 
         return convertView;

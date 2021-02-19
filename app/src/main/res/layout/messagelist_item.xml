@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:orientation="horizontal">
+
+        <com.example.campusinformationplatform.RoundImageView
+            android:id="@+id/MessageItem_UserHeadImg"
+            android:layout_width="45dp"
+            android:layout_height="45dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/MessageItem_UserName"
+                android:layout_width="match_parent"
+                android:layout_height="27dp"
+                android:text="UserName"
+                android:textSize="19sp" />
+
+            <TextView
+                android:id="@+id/MessageItem_ReleaseDate"
+                android:layout_width="match_parent"
+                android:layout_height="18dp"
+                android:text="TextView"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/MessageItem_Message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
+
+
+</LinearLayout>

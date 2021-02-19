@@ -20,6 +20,7 @@ public class Global_Value extends Application {
 
     public String UserName;
 
+    public String Details_Releaseid;
     public ArrayList<Uri> EnlargeImage;
 
     @Override
@@ -45,9 +46,10 @@ public class Global_Value extends Application {
                 destDir.mkdirs();
             }
 
-            Log.d("", "创建成功");
+            //Log.d("", "创建成功");
 
             UserName="";
+            Details_Releaseid="";
         }catch (Exception e) {
             e.printStackTrace();
         }
@@ -103,4 +105,12 @@ public class Global_Value extends Application {
     public String getUserName(){
         return UserName;
     }
+
+    public void setDetails_Releaseid(String Details_Releaseid){
+        this.Details_Releaseid=Details_Releaseid;
+    }
+    public  String getDetails_Releaseid(){
+        return Details_Releaseid;
+    }
+
 }

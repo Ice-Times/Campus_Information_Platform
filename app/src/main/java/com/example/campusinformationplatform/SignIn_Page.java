@@ -58,73 +58,73 @@ public class SignIn_Page extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                /*
-                new Thread(new Runnable() {
-                    public void run() {
-                        try {
-                            String state = Status.SignIn_State;
-                            Socket socket = new Socket(HOST, PORT);
+
+//                new Thread(new Runnable() {
+//                    public void run() {
+//                        try {
+//                            String state = Status.SignIn_State;
+//                            Socket socket = new Socket(HOST, PORT);
+//
+//
+//                            try {
+//                                JSONObject Sending = new JSONObject();
+//
+//                                Sending.put("Status", state);
+//                                Sending.put("UserName", UserName.getText());
+//                                Sending.put("UserPassword", UserPassword.getText());
+//                                String result = Sending.toString();
+//
+//                                System.out.println("登录信息：" + result);
+//
+//
+//                                //写入String
+//                                DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
+//                                outputStream.writeUTF(result);
+//
+//                                outputStream.flush();
+//
+//                                outputStream.close();
+//                                socket.close();
+//
+//
+//                                //接收状态
+//                                socket = new Socket(HOST, PORT);
+//
+//                                DataInputStream inputStream=new DataInputStream(socket.getInputStream());
+//
+//                                try{
+//                                    System.out.println("接收服务器的数据");
+//                                    Sign_In_State=inputStream.readUTF();
+//
+//                                }catch(Exception e){
+//                                    System.out.println("接收服务器数据异常");
+//                                    e.printStackTrace();
+//                                }
+//
+//                                Log.d("服务器发送的数据为 ", Sign_In_State);
+//
+//                                inputStream.close();
+//                                socket.close();
+//
+//
+//                            }catch (JSONException|IOException ex) {
+//                                ex.printStackTrace();
+//                            }
+//
+//
+//                        } catch (SocketException e){
+//                            e.printStackTrace();
+//                        }catch (IOException ex) {
+//                            ex.printStackTrace();
+//                        }
+//
+//                    }
+//
+//
+//
+//                }).start();
 
 
-                            try {
-                                JSONObject Sending = new JSONObject();
-
-                                Sending.put("Status", state);
-                                Sending.put("UserName", UserName.getText());
-                                Sending.put("UserPassword", UserPassword.getText());
-                                String result = Sending.toString();
-
-                                System.out.println("登录信息：" + result);
-
-
-                                //写入String
-                                DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
-                                outputStream.writeUTF(result);
-
-                                outputStream.flush();
-
-                                outputStream.close();
-                                socket.close();
-
-
-                                //接收状态
-                                socket = new Socket(HOST, PORT);
-
-                                DataInputStream inputStream=new DataInputStream(socket.getInputStream());
-
-                                try{
-                                    System.out.println("接收服务器的数据");
-                                    Sign_In_State=inputStream.readUTF();
-
-                                }catch(Exception e){
-                                    System.out.println("接收服务器数据异常");
-                                    e.printStackTrace();
-                                }
-
-                                Log.d("服务器发送的数据为 ", Sign_In_State);
-
-                                inputStream.close();
-                                socket.close();
-
-
-                            }catch (JSONException|IOException ex) {
-                                ex.printStackTrace();
-                            }
-
-
-                        } catch (SocketException e){
-                            e.printStackTrace();
-                        }catch (IOException ex) {
-                            ex.printStackTrace();
-                        }
-
-                    }
-
-
-
-                }).start();
-
-                 */
 
                 gv.setUserName("ice");
                 Intent i = new Intent(SignIn_Page.this , Main_Page.class);
