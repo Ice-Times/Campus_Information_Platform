@@ -25,6 +25,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -53,6 +54,7 @@ public class Details_Page extends AppCompatActivity {
     private String Picture_num;
     private String Releaseid="";
 
+    public ImageView Emptyitems;
 
     public TextView DetailsType;
     public ImageView DetailsUserheadImg;
@@ -91,6 +93,10 @@ public class Details_Page extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details__page);
+
+        //禁止输入法自动弹出
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
 
         gv = (Global_Value) getApplication();
 
@@ -131,23 +137,21 @@ public class Details_Page extends AppCompatActivity {
         DetailsPicrelease5=(ImageView)findViewById(R.id.Details_PicRelease5);
         DetailsPicrelease6=(ImageView)findViewById(R.id.Details_PicRelease6);
 
+        Emptyitems=(ImageView)findViewById(R.id.Emptyitems);
 
         context=this;
 
         listview =(ListView)findViewById(R.id.Details_Messagelistview);
         listItem = new ArrayList<HashMap<String, Object>>();
 
-        for(int i=0;i<5;i++){
-            HashMap<String, Object> item = new HashMap<String, Object>();
-            Bitmap headimg = openImage(Cache_Head_Path + "ice.jpg");
+        adapt = new MessagelistAdapt(context, listItem);
+        setListViewHeightBasedOnChildren(listview);
+        listview.setAdapter(adapt);
 
-            item.put("MessageUserheadImg", headimg);
-            item.put("MessageUsername", "UserName");
-            item.put("MessageReleasedate", "2021-02-09 18:09:53");
-            item.put("Message", "多少钱呢？");
+        listview.setEmptyView(Emptyitems);
 
-            listItem.add(item);
-        }
+
+
 
 
         Message_EditText=(EditText)findViewById(R.id.Message_EditText);
@@ -219,10 +223,8 @@ public class Details_Page extends AppCompatActivity {
 
 
 
-
                     }
                 })).start();
-
 
             }
         });
@@ -230,10 +232,6 @@ public class Details_Page extends AppCompatActivity {
 
 
 
-
-        adapt = new MessagelistAdapt(context, listItem);
-        setListViewHeightBasedOnChildren(listview);
-        listview.setAdapter(adapt);
 
 
         Thread infThread=new Thread(new Thread(new Runnable() {
@@ -244,15 +242,15 @@ public class Details_Page extends AppCompatActivity {
 
                     String msg = "";
                     try {
-                        System.out.println("接收服务器的数据");
+                        System.out.println("infthread接收服务器的数据");
                         msg = inputStream.readUTF();
 
                     } catch (Exception e) {
-                        System.out.println("接收服务器数据异常");
+                        System.out.println("infthread接收服务器数据异常");
                         e.printStackTrace();
                     }
 
-                    Log.d("服务器发送的数据为 ", msg);
+                    Log.d("infthread服务器发送的数据为 ", msg);
 
                     inputStream.close();
                     socket.close();
@@ -462,6 +460,87 @@ public class Details_Page extends AppCompatActivity {
 
 
 
+
+
+        Thread messageThread=new Thread(new Thread(new Runnable() {
+            public void run() {
+                try {
+                    String state = Status.GetMessage_State;
+                    Socket socket = new Socket(HOST, PORT+1);
+                    JSONObject Sending = new JSONObject();
+
+                    Sending.put("Status", state);
+                    Sending.put("ReleaseId", Releaseid);
+
+
+                    //写入String
+                    String msg = Sending.toString();
+
+                    System.out.println("messagethread发送数据："+msg);
+                    DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
+                    outputStream.writeUTF(msg);
+
+                    outputStream.flush();
+
+                    outputStream.close();
+                    socket.close();
+
+
+                    //接收状态
+                    socket = new Socket(HOST, PORT+1);
+                    DataInputStream inputStream = new DataInputStream(socket.getInputStream());
+
+                    String s = "";
+                    try {
+                        System.out.println("messagethread接收服务器的数据");
+                        //GetRowNumber=Integer.parseInt(inputStream.readUTF());
+                        s = inputStream.readUTF();
+
+                    } catch (Exception e) {
+                        System.out.println("messagethread接收服务器数据异常");
+                        e.printStackTrace();
+                    }
+
+                    Log.d("messagethread服务器发送的数据为 ", s);
+
+                    inputStream.close();
+                    socket.close();
+
+                    JSONArray Server_JsonArray = new JSONArray(s);
+                    //ArrayList<HashMap<String, Object>> listItem = new ArrayList<HashMap<String, Object>>();
+                    for (int i = 0; i < Server_JsonArray.length(); i++) {
+                        HashMap<String, Object> item = new HashMap<String, Object>();
+
+                        JSONObject jo = Server_JsonArray.getJSONObject(i);
+                        Bitmap headimg = openImage(Cache_Head_Path + jo.getString("username") + ".jpg");
+
+                        item.put("MessageUsername", jo.getString("username"));
+                        item.put("MessageReleasedate", jo.getString("release_date"));
+                        item.put("Message", jo.getString("message"));
+                        item.put("MessageUserheadImg", headimg);
+
+                        listItem.add(item);
+
+                    }
+
+
+                    new Handler(context.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            adapt.notifyDataSetChanged();
+                        }
+                    });
+
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }));
+
+
+
         infThread.start();
         try {
             infThread.join();
@@ -470,8 +549,12 @@ public class Details_Page extends AppCompatActivity {
         }
         picThread.start();
 
+        messageThread.start();
+
 
     }
+
+
 
 
     public static Bitmap openImage(String path) {
@@ -531,8 +614,82 @@ public class Details_Page extends AppCompatActivity {
     }
 
     private void GetMessageFromServer(){
+        new Thread(new Thread(new Runnable() {
+            public void run() {
+                try {
+                    String state = Status.GetMessage_State;
+                    Socket socket = new Socket(HOST, PORT+1);
+                    JSONObject Sending = new JSONObject();
+
+                    Sending.put("Status", state);
+                    Sending.put("ReleaseId", Releaseid);
 
 
+                    //写入String
+                    String msg = Sending.toString();
+
+                    System.out.println("发送数据："+msg);
+                    DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
+                    outputStream.writeUTF(msg);
+
+                    outputStream.flush();
+
+                    outputStream.close();
+                    socket.close();
+
+
+                    //接收状态
+                    socket = new Socket(HOST, PORT+1);
+                    DataInputStream inputStream = new DataInputStream(socket.getInputStream());
+
+                    String s = "";
+                    try {
+                        System.out.println("messagethread接收服务器的数据");
+                        //GetRowNumber=Integer.parseInt(inputStream.readUTF());
+                        s = inputStream.readUTF();
+
+                    } catch (Exception e) {
+                        System.out.println("messagethread接收服务器数据异常");
+                        e.printStackTrace();
+                    }
+
+                    Log.d("messagethread服务器发送的数据为 ", s);
+
+                    inputStream.close();
+                    socket.close();
+
+                    JSONArray Server_JsonArray = new JSONArray(s);
+                    //ArrayList<HashMap<String, Object>> listItem = new ArrayList<HashMap<String, Object>>();
+                    for (int i = 0; i < Server_JsonArray.length(); i++) {
+                        HashMap<String, Object> item = new HashMap<String, Object>();
+
+                        JSONObject jo = Server_JsonArray.getJSONObject(i);
+                        Bitmap headimg = openImage(Cache_Head_Path + jo.getString("username") + ".jpg");
+
+                        item.put("MessageUsername", jo.getString("username"));
+                        item.put("MessageReleasedate", jo.getString("release_date"));
+                        item.put("Message", jo.getString("message"));
+                        item.put("MessageUserheadImg", headimg);
+
+                        listItem.add(item);
+
+                    }
+
+
+                    new Handler(context.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            adapt.notifyDataSetChanged();
+                        }
+                    });
+
+
+                }catch (Exception e){
+                e.printStackTrace();
+                }
+            }
+        })).start();
 
 
     }

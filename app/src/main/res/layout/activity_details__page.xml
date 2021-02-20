@@ -143,6 +143,24 @@
                     android:id="@+id/Details_Messagelistview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
+<!--                <TextView-->
+<!--                    android:id="@+id/Emptyitems"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:text="暂无留言"-->
+<!--                    android:textAppearance="?android:attr/textAppearanceMedium" />-->
+                <ImageView
+                    android:id="@+id/Emptyitems"
+                    android:layout_width="match_parent"
+                    android:layout_height="190dp"
+                    android:src="@drawable/nomessage" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp">
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             </LinearLayout>
 

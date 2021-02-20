@@ -589,15 +589,6 @@ public class Information_Page extends Fragment {
                                             System.out.println("接收服务器数据成功");
 
 
-//                                            socket = new Socket(HOST, PORT);
-//                                            outputStream = new DataOutputStream(socket.getOutputStream());
-//                                            outputStream.writeUTF(smsg);
-//                                            System.out.println("发送图片信息");
-//
-//                                            outputStream.flush();
-//
-//                                            outputStream.close();
-//                                            socket.close();
 
 
                                         } catch (Exception e) {

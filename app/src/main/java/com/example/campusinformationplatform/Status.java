@@ -16,6 +16,7 @@ public class Status {
     public static final String GetInformtionDetailsPic_State="Send_GetInfDetailsPic_Msg";//向服务器请求用户发布的信息详情
 
     public static final String SendMessage_State="Send_Message_Msg";//向服务器发送留言
+    public static final String GetMessage_State="Send_GetMessage_Msg";//向服务器请求留言
 
     public static final String Re_SignUp_Success = "SignUp_Success";// 注册成功
     public static final String Re_SignIn_Success = "SignIn_Success";// 登录成功
