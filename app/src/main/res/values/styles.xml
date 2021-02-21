@@ -6,6 +6,22 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <!--引用自定义popupwindow样式-->
+        <item name="popupMenuStyle">@style/MyPopupMenu</item>
+        <item name="textAppearanceSmallPopupMenu">@style/MyTextAppearance</item>
+        <item name="textAppearanceLargePopupMenu">@style/MyTextAppearance</item>
+
+    </style>
+
+    <!--popupwidow的背景颜色-->
+    <style name="MyPopupMenu" >
+        <item name="android:popupBackground">@color/blue1</item>
+    </style>
+    <!--popupwindow的文字样式-->
+    <style name="MyTextAppearance">
+        <item name="android:textColor">@color/b1</item>
+        <item name="android:textSize">21sp</item>
     </style>
 
 </resources>

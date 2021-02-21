@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
         android:layout_marginLeft="28dp"
-        android:layout_marginTop="68dp"
+        android:layout_marginTop="38dp"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -37,10 +37,11 @@
                     android:gravity="center_vertical"
                     android:paddingLeft="10dp"
                     android:text="ice"
+                    android:textColor="#3E3E3E"
                     android:textSize="30sp" />
 
                 <TextView
-                    android:id="@+id/PersonalPage_UserStep"
+                    android:id="@+id/PersonalPage_UserNumOfInf"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:gravity="center_vertical"
