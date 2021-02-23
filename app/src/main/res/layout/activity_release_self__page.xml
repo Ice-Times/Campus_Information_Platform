@@ -6,14 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".ReleaseSelf_Page">
 
-
-    <ListView
-        android:id="@+id/Self_Release_Listview"
-        android:layout_width="390dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="13dp"
-        android:layout_marginLeft="13dp"
-        android:layout_marginTop="1dp"
+    <com.handmark.pulltorefresh.library.PullToRefreshListView
+        android:id="@+id/Self_Release_Pull_Refresh_List"
+        android:layout_width="380dp"
+        android:layout_height="fill_parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+    </com.handmark.pulltorefresh.library.PullToRefreshListView>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

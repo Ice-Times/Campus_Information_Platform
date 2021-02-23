@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".Details_Page">
 
+<!--    <include layout="@layout/navigation_topitem"/>-->
     <ScrollView
         android:id="@+id/scrollview"
         android:layout_width="390dp"

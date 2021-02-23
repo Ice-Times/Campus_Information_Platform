@@ -426,7 +426,6 @@ public class Information_Page extends Fragment {
                     //下拉刷新 业务代码
 
                     RefreshView(1);
-
                     PullToRefreshListView.postDelayed(new Runnable() {
 
                         @Override
@@ -439,7 +438,6 @@ public class Information_Page extends Fragment {
                 } else {
                     Toast.makeText(context, "上拉加载更多", Toast.LENGTH_SHORT).show();
                     //上拉加载更多 业务代码
-
                     Thread infThread=new Thread(new Runnable() {
                         public void run() {
                             try {
@@ -531,7 +529,7 @@ public class Information_Page extends Fragment {
                                     if (listItem.get(i).get("Picrelease") == null) {
                                         System.out.println("添加图片："+listItem.get(i).get("releaseid"));
                                         String state = Status.GetInformtionPic_State;
-                                        Socket socket = new Socket(HOST, PORT);
+                                        Socket socket = new Socket(HOST, PORT+1);
                                         JSONObject Sending = new JSONObject();
 
                                         Sending.put("Status", state);
@@ -548,7 +546,7 @@ public class Information_Page extends Fragment {
                                         socket.close();
 
 
-                                        socket = new Socket(HOST, PORT);
+                                        socket = new Socket(HOST, PORT+1);
                                         DataInputStream inputStream = new DataInputStream(socket.getInputStream());
 
                                         try {
@@ -559,7 +557,6 @@ public class Information_Page extends Fragment {
                                             while (len < size) {
                                                 len += inputStream.read(data, len, (int) size - len);
                                             }
-
 
                                             //ByteArrayOutputStream outPut = new ByteArrayOutputStream();
                                             if (data == null)
@@ -582,7 +579,6 @@ public class Information_Page extends Fragment {
                                                     listItem.get(finalI).put("Picrelease", showBitmap);
 
                                                     adapt.notifyDataSetChanged();
-
 
                                                 }
                                             });
@@ -618,29 +614,6 @@ public class Information_Page extends Fragment {
                         e.printStackTrace();
                     }
                     picThread.start();
-
-//                    Bitmap headimg = openImage(Cache_Head_Path + "ice.jpg");
-//
-//                    HashMap<String, Object> item = new HashMap<String, Object>();
-//
-//                    //Bitmap headimg = openImage(Cache_Head_Path + "ice.jpg");
-//
-//                    item.put("Type", "Type");
-//                    item.put("UserHeadImg", headimg);
-//                    item.put("UserName", "UserName");
-//                    item.put("ReleaseDate", "2021-02-09 18:09:53");
-//                    item.put("Describe", "● 此商品来源于Yahoo! JAPAN拍卖网站\n" +
-//                            "● 侦测到“故障品”字样，请与客服确认\n" +
-//                            "● 此卖家为店铺，可能收10%消费税\n" +
-//                            "● 此商品为海外发货，可能收取高额运费。\n" +
-//                            "   海外发货进日本海关可能产生关税，需中标者承担\n" +
-//                            "● 此商品注意尺寸重量限制,以免无法运输\n" +
-//                            "● 特殊卖家，不允许取消！请谨慎出价！;该卖家需加收[10%]消费税!");
-//                    item.put("Picrelease", headimg);
-//
-//                    listItem.add(item);
-//
-//                    adapt.notifyDataSetChanged();
 
                     PullToRefreshListView.postDelayed(new Runnable() {
 
@@ -684,6 +657,7 @@ public class Information_Page extends Fragment {
                             socket.close();
 
 
+
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -694,14 +668,18 @@ public class Information_Page extends Fragment {
 
                 infThread.start();
 
+
+                try {
+                    infThread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("跳转页面");
                 Intent i = new Intent(getActivity() , Details_Page.class);
                 startActivity(i);
 
             }
         });
-
-
-
 
 
 
@@ -852,137 +830,6 @@ public class Information_Page extends Fragment {
                         }
                     });
 
-//
-//                    Handler mainHandler = new Handler(Looper.getMainLooper());
-//                    mainHandler.post(new Runnable() {
-//
-//                        @Override
-//
-//                        public void run() {
-//
-//                            Bitmap headimg = openImage(Cache_Head_Path + "ice.jpg");
-//                            listItem.get(1).remove("Picrelease");
-//                            listItem.get(1).put("Picrelease",headimg);
-//
-//
-//                            HashMap<String, Object> item = new HashMap<String, Object>();
-//
-//                            //Bitmap headimg = openImage(Cache_Head_Path + "ice.jpg");
-//
-//                            item.put("Type", "Type");
-//                            item.put("UserHeadImg", headimg);
-//                            item.put("UserName", "UserName");
-//                            item.put("ReleaseDate", "2021-02-09 18:09:53");
-//                            item.put("Describe", "● 此商品来源于Yahoo! JAPAN拍卖网站\n" +
-//                                    "● 侦测到“故障品”字样，请与客服确认\n" +
-//                                    "● 此卖家为店铺，可能收10%消费税\n" +
-//                                    "● 此商品为海外发货，可能收取高额运费。\n" +
-//                                    "   海外发货进日本海关可能产生关税，需中标者承担\n" +
-//                                    "● 此商品注意尺寸重量限制,以免无法运输\n" +
-//                                    "● 特殊卖家，不允许取消！请谨慎出价！;该卖家需加收[10%]消费税!");
-//                            item.put("Picrelease", headimg);
-//
-//                            listItem.add(item);
-//                            Log.d("", "nnnnn");
-//
-//                            ArrayList<HashMap<String, Object>> li=(ArrayList<HashMap<String, Object>>)listItem.clone();
-//
-//                            listItem.clear();
-//                            listItem.addAll(li);
-//
-//
-//                            adapt.notifyDataSetChanged();
-//
-//                        }
-//                    });
-
-
-//
-//                    h1=new Handler() {
-//                        @RequiresApi(api = Build.VERSION_CODES.N)
-//                        public void run() {
-//                            // 在这里执行你要想的操作 比如直接在这里更新ui或者调用回调在 在回调中更新ui
-//
-//                            Bitmap headimg = openImage(Cache_Head_Path + "ice.jpg");
-//                            listItem.get(1).remove("Picrelease");
-//                            listItem.get(1).put("Picrelease",headimg);
-//
-//
-//                            HashMap<String, Object> item = new HashMap<String, Object>();
-//
-//                            //Bitmap headimg = openImage(Cache_Head_Path + "ice.jpg");
-//
-//                            item.put("Type", "Type");
-//                            item.put("UserHeadImg", headimg);
-//                            item.put("UserName", "UserName");
-//                            item.put("ReleaseDate", "2021-02-09 18:09:53");
-//                            item.put("Describe", "● 此商品来源于Yahoo! JAPAN拍卖网站\n" +
-//                    "● 侦测到“故障品”字样，请与客服确认\n" +
-//                    "● 此卖家为店铺，可能收10%消费税\n" +
-//                    "● 此商品为海外发货，可能收取高额运费。\n" +
-//                    "   海外发货进日本海关可能产生关税，需中标者承担\n" +
-//                    "● 此商品注意尺寸重量限制,以免无法运输\n" +
-//                    "● 特殊卖家，不允许取消！请谨慎出价！;该卖家需加收[10%]消费税!");
-//                            item.put("Picrelease", headimg);
-//
-//                            listItem.add(item);
-//
-//
-//                            Log.d("", "nnnnn");
-//
-//                            ArrayList<HashMap<String, Object>> li=(ArrayList<HashMap<String, Object>>)listItem.clone();
-//                            //li.clone(listItem);
-//                           // li=listItem.clone();
-//
-//                            listItem.clear();
-//                            listItem.addAll(li);
-//
-//                            adapt.notifyDataSetChanged();
-//                            //listItem.notify();
-//
-//
-////                            MainlistAdapt adapt=new MainlistAdapt(context,listItem);
-////                            ListView mListView = PullToRefreshListView.getRefreshableView();
-////                            mListView.setAdapter(adapt);
-//                        }
-//                    };
-
-
-//                     String img=jo.get("picture_released1").toString();
-//                     img=new MyTB
-
-
-//                    //获取每行数据
-//                    for(int i=0;i<GetRowNumber;i++){
-//                        socket = new Socket(HOST, PORT);
-//                        inputStream=new DataInputStream(socket.getInputStream());
-//                        String server_msg="";
-//                        try{
-//                            System.out.println("接收服务器的数据");
-//                            server_msg=inputStream.readUTF();
-//
-//                            JSONArray Server_msg = new JSONArray(server_msg);
-//
-//                            HashMap<String, Object> item = new HashMap<String, Object>();
-//                            item.put("Type", s.get);
-//                            //item.put("UserHeadImg", headimg);
-//                            item.put("UserName", "UserName");
-//                            item.put("ReleaseDate", "2021-02-09 18:09:53");
-//
-//
-//
-//
-//
-//                        }catch(Exception e){
-//                            System.out.println("接收服务器数据异常");
-//                            e.printStackTrace();
-//                        }
-//
-//
-//
-//
-//
-//                    }
 
                 } catch (Exception e) {
                     System.out.println("服务器连接异常");
@@ -992,95 +839,6 @@ public class Information_Page extends Fragment {
 
             }
         });
-//
-//        Thread picThread = new Thread(new Runnable() {
-//            public void run() {
-//                try {
-//                    Log.d("listitem size: ", String.valueOf(listItem.size()));
-//                    for (int i = 0; i < listItem.size(); i++) {
-//                        String state = Status.GetInformtionPic_State;
-//                        Socket socket = new Socket(HOST, PORT);
-//                        JSONObject Sending = new JSONObject();
-//
-//                        Sending.put("Status", state);
-//
-//                        if (i == 0) {
-//                            Sending.put("Picnum", listItem.size());
-//                        }
-//
-//                        Sending.put("releaseid", listItem.get(i).get("releaseid"));
-//
-//                        String smsg = Sending.toString();
-//
-//                        DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
-//                        outputStream.writeUTF(smsg);
-//
-//                        outputStream.flush();
-//
-//                        outputStream.close();
-//                        socket.close();
-//
-//
-//                        socket = new Socket(HOST, PORT);
-//                        DataInputStream inputStream = new DataInputStream(socket.getInputStream());
-//
-//                        try {
-//                            System.out.println("接收服务器的数据");
-//                            long size = inputStream.readLong();
-//                            byte[] data = new byte[(int) size];
-//                            int len = 0;
-//                            while (len < size) {
-//                                len += inputStream.read(data, len, (int) size - len);
-//                            }
-//
-//
-//                            //ByteArrayOutputStream outPut = new ByteArrayOutputStream();
-//                            if (data == null)
-//                                Log.d("data", "null");
-//
-//                            //inputStream.close();
-//                            socket.close();
-//
-//                            final Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-//
-//                            final Bitmap showBitmap = getScaleBitmap(bitmap);
-//
-//                            final int finalI = i;
-//                            Handler mainHandler = new Handler(Looper.getMainLooper());
-//                            mainHandler.post(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    //Bitmap headimg = openImage(Cache_Head_Path + "ice.jpg");
-//                                    listItem.get(finalI).remove("Picrelease");
-//                                    listItem.get(finalI).put("Picrelease", showBitmap);
-//
-//                                    adapt.notifyDataSetChanged();
-////                                    MainlistAdapt adapt=new MainlistAdapt(context,listItem);
-////                                    ListView mListView = PullToRefreshListView.getRefreshableView();
-////
-////                                    mListView.setAdapter(adapt);
-//
-//                                }
-//                            });
-//
-//                        } catch (
-//                                Exception e) {
-//                            System.out.println("接收服务器数据异常");
-//                            e.printStackTrace();
-//                        }
-//
-//                        Log.d("服务器发送图片 ", "接收成功");
-//
-//                    }
-//
-//
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//
-//
-//            }
-//        });
 
         Thread picThread = new Thread(new Runnable() {
             public void run() {
@@ -1099,7 +857,7 @@ public class Information_Page extends Fragment {
 
                             String smsg = Sending.toString();
 
-                            Socket socket = new Socket(HOST, PORT);
+                            Socket socket = new Socket(HOST, PORT+1);
                             DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
                             outputStream.writeUTF(smsg);
                             System.out.println("发送图片信息");
@@ -1110,7 +868,7 @@ public class Information_Page extends Fragment {
                             socket.close();
 
 
-                            socket = new Socket(HOST, PORT);
+                            socket = new Socket(HOST, PORT+1);
                             DataInputStream inputStream = new DataInputStream(socket.getInputStream());
 
                             try {
@@ -1128,17 +886,6 @@ public class Information_Page extends Fragment {
 
                                 inputStream.close();
                                 socket.close();
-
-//                                socket = new Socket(HOST, PORT);
-//                                outputStream = new DataOutputStream(socket.getOutputStream());
-//                                outputStream.writeUTF(smsg);
-//                                System.out.println("发送图片信息");
-//
-//                                outputStream.flush();
-//
-//                                outputStream.close();
-//                                socket.close();
-
 
 
                                 final Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
@@ -1170,7 +917,6 @@ public class Information_Page extends Fragment {
                     System.out.println("接收服务器数据异常");
                     e.printStackTrace();
                 }
-
 
             }
         });

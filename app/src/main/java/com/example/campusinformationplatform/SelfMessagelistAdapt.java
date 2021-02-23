@@ -1,28 +1,17 @@
 package com.example.campusinformationplatform;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.appcompat.widget.PopupMenu;
-
-import org.json.JSONObject;
-
-import java.io.DataOutputStream;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
-
-public class SelfReleaselistAdapt extends BaseAdapter {
+public class SelfMessagelistAdapt extends BaseAdapter {
     private LayoutInflater mInflater;//得到一个LayoutInfalter对象用来导入布局
     ArrayList<HashMap<String, Object>> listItem;
 
@@ -30,11 +19,10 @@ public class SelfReleaselistAdapt extends BaseAdapter {
 
 
 
-    public SelfReleaselistAdapt(Context context, ArrayList<HashMap<String, Object>> listItem) {
+    public SelfMessagelistAdapt(Context context, ArrayList<HashMap<String, Object>> listItem) {
         this.mInflater = LayoutInflater.from(context);
         this.listItem = listItem;
         this.context=context;
-
 
 
     }//声明构造函数
@@ -58,11 +46,10 @@ public class SelfReleaselistAdapt extends BaseAdapter {
 
     static class itemStruct
     {
-        public TextView SelfType;
+
         public TextView SelfTitle;
         public TextView SelfReleasedate;
-        public TextView SelfDescribe;
-
+        public TextView SelfMessage;
 
         public ImageView SelfIcon;
     }//声明item结构
@@ -70,58 +57,50 @@ public class SelfReleaselistAdapt extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, final ViewGroup parent) {
-        SelfReleaselistAdapt.itemStruct zj ;
+        SelfMessagelistAdapt.itemStruct zj ;
         if(convertView == null)
         {
-            zj = new SelfReleaselistAdapt.itemStruct();
-            convertView = mInflater.inflate(R.layout.release_self_list_item, null);
-
-            zj.SelfType=(TextView)convertView.findViewById(R.id.Release_Self_Type);
-            zj.SelfTitle=(TextView)convertView.findViewById(R.id.Release_Self_Title);
-            zj.SelfReleasedate=(TextView)convertView.findViewById(R.id.Release_Self_Date);
-            zj.SelfDescribe=(TextView)convertView.findViewById(R.id.Release_Self_Describe);
+            zj = new SelfMessagelistAdapt.itemStruct();
+            convertView = mInflater.inflate(R.layout.message_self_list_item, null);
 
 
-            zj.SelfIcon=(ImageView) convertView.findViewById(R.id.Release_Self_Icon);
+            zj.SelfTitle=(TextView)convertView.findViewById(R.id.Message_Self_Title);
+            zj.SelfReleasedate=(TextView)convertView.findViewById(R.id.Message_Self_Date);
+            zj.SelfMessage=(TextView)convertView.findViewById(R.id.Message_Self_Message);
+
+
+            zj.SelfIcon=(ImageView) convertView.findViewById(R.id.Message_Self_Icon);
             convertView.setTag(zj);
         }
         else {
-            zj = (SelfReleaselistAdapt.itemStruct)convertView.getTag();
+            zj = (SelfMessagelistAdapt.itemStruct)convertView.getTag();
 
         }
 
         zj.SelfIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mOnItemDeleteListener.onDeleteClick(v,position);
+                mOnItemListener.onClick(v,position);
             }
         });
 
 
         if(((String) listItem.get(position).get("isEnd")).equals("false")) {
-            zj.SelfType.setText((String) listItem.get(position).get("SelfType"));
+
             zj.SelfTitle.setText((String) listItem.get(position).get("SelfTitle"));
             zj.SelfReleasedate.setText("发布于 " + (String) listItem.get(position).get("SelfReleasedate"));
-            zj.SelfDescribe.setText((String) listItem.get(position).get("SelfDescribe"));
+            zj.SelfMessage.setText((String) listItem.get(position).get("SelfMessage"));
 
-//            zj.SelfIcon.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Log.d("zjzj", "onClick: ");
-//                    showPopupMenu(v,position);
-//                }
-//            });
         }
         else{
-            zj.SelfType.setText("暂无更多数据");
-            zj.SelfTitle.setText(null);
-            zj.SelfReleasedate.setText(null);
-            zj.SelfDescribe.setText(null);
-
+            zj.SelfTitle.setText("暂无更多数据");
 
             zj.SelfReleasedate.setHeight(0);
-            zj.SelfTitle.setHeight(0);
-            zj.SelfDescribe.setHeight(0);
+            zj.SelfMessage.setHeight(0);
+
+            //zj.SelfTitle.setText(null);
+            zj.SelfReleasedate.setText(null);
+            zj.SelfMessage.setText(null);
 
 
             zj.SelfIcon.setVisibility(View.INVISIBLE);
@@ -135,20 +114,21 @@ public class SelfReleaselistAdapt extends BaseAdapter {
     /**
      * 删除按钮的监听接口
      */
-    public interface onItemDeleteListener {
-        void onDeleteClick(View v,int i);
+    public interface onItemListener {
+        void onClick(View v,int i);
     }
 
-    private onItemDeleteListener mOnItemDeleteListener;
+    private SelfMessagelistAdapt.onItemListener mOnItemListener;
 
-    public void setOnItemDeleteClickListener(onItemDeleteListener mOnItemDeleteListener) {
-        this.mOnItemDeleteListener = mOnItemDeleteListener;
+    public void setOnItemClickListener(SelfMessagelistAdapt.onItemListener mOnItemListener) {
+        this.mOnItemListener = mOnItemListener;
     }
 
 
 
 
 }
+
 
 
 

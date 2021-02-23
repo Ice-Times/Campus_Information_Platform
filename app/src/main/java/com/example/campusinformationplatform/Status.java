@@ -18,8 +18,13 @@ public class Status {
     public static final String SendMessage_State="Send_Message_Msg";//向服务器发送留言
     public static final String GetMessage_State="Send_GetMessage_Msg";//向服务器请求留言
 
-    public static final String GetUserNumberOfInf="Send_GetUserNumberOfInf_Msg";
+    public static final String GetUserNumberOfInf="Send_GetUserNumberOfInf_Msg";//获取信息数量
 
+    public static final String GetUserselfRelease="Send_GetUserselfRelease_Msg";//向服务器获取用户发布的信息
+    public static final String GetUserselfMessage="Send_GetUserselfMessage_Msg";//向服务器获取用户发布的信息
+
+    public static final String DeleteUserRelease="Send_DelUserselfRelease_Msg";//删除发布
+    public static final String DeleteUserMessage="Send_DelUserselfMessage_Msg";//删除留言
 
     public static final String Re_SignUp_Success = "SignUp_Success";// 注册成功
     public static final String Re_SignIn_Success = "SignIn_Success";// 登录成功
@@ -29,6 +34,7 @@ public class Status {
     public static final String Re_SignIn_User_Not_Exist_Err = "User_Not_Exist_Err";// 用户名存在登陆失败
 
     public static final String Re_SignIn_User_State_Locked_Err = "User_State_Locked_Err";// 用户被封禁
+    public static final String Re_InfisEnd = "InfisEnd";//信息已完全读完
 
     public static final String Re_Message_Success = "Message_Success";// 留言成功
 

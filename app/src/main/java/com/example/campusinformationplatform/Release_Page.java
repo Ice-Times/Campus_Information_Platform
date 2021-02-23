@@ -15,6 +15,7 @@ import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.text.Editable;
@@ -42,6 +43,7 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -111,28 +113,22 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
         checkBoxes[2].setOnCheckedChangeListener(this);
         checkBoxes[3].setOnCheckedChangeListener(this);
 
-
         describe_Edittext.addTextChangedListener(new TextWatcher() {
             private CharSequence wordNum;//记录输入的字数
             private int selectionStart;
             private int selectionEnd;
-
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
             }
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 wordNum= s;//实时记录输入的字数
             }
-
             @Override
             public void afterTextChanged(Editable s) {
-
                 //当前字数
                 int number = s.length();
-
                 //TextView显示剩余字数
                 selectionStart=describe_Edittext.getSelectionStart();
                 selectionEnd = describe_Edittext.getSelectionEnd();
@@ -145,7 +141,6 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
                     WordCount.setTextColor(android.graphics.Color.rgb(156, 156, 156));
                 }
 
-
                 if (wordNum.length() > MaxInputWords) {
                     WordCount.setTextColor(android.graphics.Color.RED);
                     //删除多余输入的字（不会显示出来）
@@ -157,8 +152,6 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
 
             }
         });
-
-
 
         BitmapList.add(Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.add_img2),
                 gridImgViewSize,gridImgViewSize, true));//类型的转换);
@@ -203,9 +196,7 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
 //                                startActivity(i);
 
                             }else if(clickNum==2){//双击,删除图片
-
                                 Log.d("", "双击");
-
                                 showWhetheOrNotToDeleteImg(position);
 
                             }
@@ -245,10 +236,10 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
                                         checkBoxName="二手交易";
                                     else if(i==1)
                                         checkBoxName="失物招领";
-                                    else
+                                    else if(i==2)
                                         checkBoxName="寻物启事";
-
-
+                                    else
+                                        checkBoxName="其他";
                                 }
 
                             }
@@ -274,13 +265,11 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
 
                                 //传输图片
                                 for(int i=0;i<SendingImgList.size();i++){
-
                                     FileOutputStream fos = null;
                                     try {
                                         fos = new FileOutputStream(Cache_Temp_PATH +String.valueOf(i)+".jpg");
                                         SendingImgList.get(i).compress(Bitmap.CompressFormat.JPEG, 100, fos);
                                         fos.flush();
-
                                     } catch (FileNotFoundException e) {
                                         e.printStackTrace();
                                     } catch (IOException e) {
@@ -294,14 +283,12 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
                                             e.printStackTrace();
                                         }
                                     }
-
                                     File Temp_Img = new File(Cache_Temp_PATH+String.valueOf(i)+".jpg");
                                     if (!Temp_Img.exists()) {
 
                                         Log.e("", String.valueOf(i)+".jpg"+"不存在");
 
                                     }
-
                                    // Temp_Img = new File(Cache_Temp_PATH + String.valueOf(i)+".jpg");
                                     outputStream.writeLong(Temp_Img.length());
                                     byte[] data = new byte[(int) Temp_Img.length()];
@@ -311,14 +298,9 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
                                     outputStream.write(data);
                                     inputStream.close();
 
-
                                 }
-
-
                                 outputStream.flush();
                                 outputStream.close();
-
-
 
                             }catch(Exception e){
                                 System.out.println("发送异常");
@@ -332,6 +314,42 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
                             e.printStackTrace();
                         }
 
+                        String Re_State="";
+                        try{
+
+                        Socket socket = new Socket(HOST, PORT);
+
+                        DataInputStream inputStream=new DataInputStream(socket.getInputStream());
+
+
+                            System.out.println("接收服务器的数据");
+                            Re_State=inputStream.readUTF();
+
+
+
+                        Log.d("服务器发送的数据为 ", Re_State);
+
+                        inputStream.close();
+                        socket.close();
+                        }catch(Exception e){
+                            System.out.println("接收服务器数据异常");
+                            e.printStackTrace();
+                        }
+
+                        Handler mainHandler = new Handler(Looper.getMainLooper());
+                        final String finalRe_State = Re_State;
+                        mainHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                if(finalRe_State.equals(Status.Re_Message_Success))
+                                    Show_Release_Success();
+                                else
+                                    Show_Release_Err();
+
+
+                            }
+                        });
 
 
 
@@ -579,5 +597,33 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
         listView.setLayoutParams(params);
     }
 
+
+    private void Show_Release_Success() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setMessage("发布成功").setNegativeButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //ToDo: 你想做的事情
+                        Intent intent = new Intent(Release_Page.this , Main_Page.class);
+                        startActivity(intent);
+                        dialogInterface.dismiss();
+                    }
+                });
+        builder.create().show();
+    }
+
+    private void Show_Release_Err() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setMessage("发布失败").setNegativeButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //ToDo: 你想做的事情
+                        dialogInterface.dismiss();
+                    }
+                });
+        builder.create().show();
+    }
 
 }

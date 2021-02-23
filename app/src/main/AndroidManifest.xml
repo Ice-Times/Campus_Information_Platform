@@ -21,10 +21,13 @@
         android:theme="@style/AppTheme">
         <activity android:name=".MessageSelf_Page"></activity>
         <activity android:name=".ReleaseSelf_Page" />
-        <activity android:name=".Details_Page" />
+        <activity android:name=".Details_Page"
+            android:parentActivityName=".Main_Page"/>
         <activity android:name=".EnlargeImg_Page" />
-        <activity android:name=".Release_Page" />
-        <activity android:name=".Main_Page" />
+        <activity android:name=".Release_Page"
+            android:parentActivityName=".Main_Page"/>
+        <activity android:name=".Main_Page"
+            android:launchMode="singleTask"/>
         <activity android:name=".SignIn_Page">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

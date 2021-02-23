@@ -1,5 +1,6 @@
 package com.example.campusinformationplatform;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,6 +12,8 @@ import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -97,6 +100,14 @@ public class Details_Page extends AppCompatActivity {
         //禁止输入法自动弹出
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
+        //隐藏标题栏
+//        if (getSupportActionBar() != null){
+//            getSupportActionBar().hide();
+//        }
+
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         gv = (Global_Value) getApplication();
 
@@ -207,12 +218,29 @@ public class Details_Page extends AppCompatActivity {
                             inputStream.close();
                             socket.close();
 
-                            Looper.prepare();//增加部分
-                            if(Re_State.equals(Status.Re_Message_Success))
-                                Show_Message_Success();
-                            else
-                                Show_Message_Err();
-                            Looper.loop();//增加
+
+                            Handler mainHandler = new Handler(Looper.getMainLooper());
+                            final String finalRe_State = Re_State;
+                            mainHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    if(finalRe_State.equals(Status.Re_Message_Success))
+                                        Show_Message_Success();
+                                    else
+                                        Show_Message_Err();
+
+
+                                }
+                            });
+
+//                            Looper.prepare();//增加部分
+//                            if(finalRe_State.equals(Status.Re_Message_Success))
+//                                Show_Message_Success();
+//                            else
+//                                Show_Message_Err();
+//                            Looper.loop();//增加
+
 
 
 
@@ -229,6 +257,31 @@ public class Details_Page extends AppCompatActivity {
             }
         });
 
+        Message_EditText.addTextChangedListener(new TextWatcher() {
+            private CharSequence wordNum;//记录输入的字数
+            private int selectionStart;
+            private int selectionEnd;
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                wordNum= s;//实时记录输入的字数
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                //当前字数
+                int number = s.length();
+                if(number==0){
+                    ReleaseMessage_Bt.setEnabled(false);
+                }
+                else{
+                    ReleaseMessage_Bt.setEnabled(true);
+                }
+
+            }
+        });
 
 
 
@@ -302,7 +355,7 @@ public class Details_Page extends AppCompatActivity {
                         Sending.put("ReleaseId", Releaseid);
                         Sending.put("PictureId", i + 1);
 
-                        Socket socket = new Socket(HOST, PORT);
+                        Socket socket = new Socket(HOST, PORT+1);
 
                         String smsg = Sending.toString();
                         DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
@@ -314,7 +367,7 @@ public class Details_Page extends AppCompatActivity {
                         outputStream.close();
                         socket.close();
 
-                        socket = new Socket(HOST, PORT);
+                        socket = new Socket(HOST, PORT+1);
                         DataInputStream inputStream = new DataInputStream(socket.getInputStream());
 
                         try {
@@ -362,8 +415,6 @@ public class Details_Page extends AppCompatActivity {
                             System.out.println("接收服务器数据异常");
                             e.printStackTrace();
                         }
-
-
                     }
 
 
@@ -466,12 +517,11 @@ public class Details_Page extends AppCompatActivity {
             public void run() {
                 try {
                     String state = Status.GetMessage_State;
-                    Socket socket = new Socket(HOST, PORT+1);
+                    Socket socket = new Socket(HOST, PORT);
                     JSONObject Sending = new JSONObject();
 
                     Sending.put("Status", state);
                     Sending.put("ReleaseId", Releaseid);
-
 
                     //写入String
                     String msg = Sending.toString();
@@ -485,9 +535,8 @@ public class Details_Page extends AppCompatActivity {
                     outputStream.close();
                     socket.close();
 
-
                     //接收状态
-                    socket = new Socket(HOST, PORT+1);
+                    socket = new Socket(HOST, PORT);
                     DataInputStream inputStream = new DataInputStream(socket.getInputStream());
 
                     String s = "";
@@ -500,7 +549,6 @@ public class Details_Page extends AppCompatActivity {
                         System.out.println("messagethread接收服务器数据异常");
                         e.printStackTrace();
                     }
-
                     Log.d("messagethread服务器发送的数据为 ", s);
 
                     inputStream.close();
@@ -518,11 +566,10 @@ public class Details_Page extends AppCompatActivity {
                         item.put("MessageReleasedate", jo.getString("release_date"));
                         item.put("Message", jo.getString("message"));
                         item.put("MessageUserheadImg", headimg);
+                        item.put("Messageid", jo.getString("messageid"));
 
                         listItem.add(item);
-
                     }
-
 
                     new Handler(context.getMainLooper()).post(new Runnable() {
                         @Override
@@ -538,8 +585,6 @@ public class Details_Page extends AppCompatActivity {
                 }
             }
         }));
-
-
 
         infThread.start();
         try {
@@ -670,6 +715,7 @@ public class Details_Page extends AppCompatActivity {
                         item.put("MessageReleasedate", jo.getString("release_date"));
                         item.put("Message", jo.getString("message"));
                         item.put("MessageUserheadImg", headimg);
+                        item.put("Messageid", jo.getString("messageid"));
 
                         listItem.add(item);
 
@@ -720,6 +766,8 @@ public class Details_Page extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //ToDo: 你想做的事情
+                        RefershMessage();
+                        Message_EditText.setText("");
                         dialogInterface.dismiss();
                     }
                 });
@@ -738,4 +786,102 @@ public class Details_Page extends AppCompatActivity {
                 });
         builder.create().show();
     }
+
+    private void RefershMessage(){
+
+        Thread messageThread=new Thread(new Thread(new Runnable() {
+            public void run() {
+                try {
+
+                    String state = Status.GetMessage_State;
+                    Socket socket = new Socket(HOST, PORT);
+                    JSONObject Sending = new JSONObject();
+
+                    Sending.put("Status", state);
+                    Sending.put("ReleaseId", Releaseid);
+
+
+                    //写入String
+                    String msg = Sending.toString();
+
+                    System.out.println("messagethread发送数据："+msg);
+                    DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
+                    outputStream.writeUTF(msg);
+
+                    outputStream.flush();
+
+                    outputStream.close();
+                    socket.close();
+
+
+                    //接收状态
+                    socket = new Socket(HOST, PORT);
+                    DataInputStream inputStream = new DataInputStream(socket.getInputStream());
+
+                    String s = "";
+                    try {
+                        System.out.println("messagethread接收服务器的数据");
+                        //GetRowNumber=Integer.parseInt(inputStream.readUTF());
+                        s = inputStream.readUTF();
+
+                    } catch (Exception e) {
+                        System.out.println("messagethread接收服务器数据异常");
+                        e.printStackTrace();
+                    }
+
+                    Log.d("messagethread服务器发送的数据为 ", s);
+
+                    inputStream.close();
+                    socket.close();
+
+                    JSONArray Server_JsonArray = new JSONArray(s);
+                    //ArrayList<HashMap<String, Object>> listItem = new ArrayList<HashMap<String, Object>>();
+                    for (int i = 0; i < Server_JsonArray.length(); i++) {
+                        HashMap<String, Object> item = new HashMap<String, Object>();
+                        JSONObject jo = Server_JsonArray.getJSONObject(i);
+
+                        System.out.println("messageid: "+jo.getString("messageid"));
+                        boolean gea=false;
+                        for(int n=0; n<listItem.size();n++){
+                            System.out.println("listItemmessageid: "+listItem.get(n).get("Messageid"));
+                            if(listItem.get(n).get("Messageid").equals(jo.getString("messageid"))){
+                                gea=true;
+                            }
+                        }
+
+                        if(gea==true)
+                            break;;
+
+                        Bitmap headimg = openImage(Cache_Head_Path + jo.getString("username") + ".jpg");
+
+                        item.put("MessageUsername", jo.getString("username"));
+                        item.put("MessageReleasedate", jo.getString("release_date"));
+                        item.put("Message", jo.getString("message"));
+                        item.put("MessageUserheadImg", headimg);
+                        item.put("Messageid", jo.getString("messageid"));
+
+                        listItem.add(0,item);
+
+                    }
+
+
+                    new Handler(context.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            adapt.notifyDataSetChanged();
+                        }
+                    });
+
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }));
+
+        messageThread.start();
+    }
+
+
 }
