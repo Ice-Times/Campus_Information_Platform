@@ -1,6 +1,8 @@
 package com.example.campusinformationplatform;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -25,6 +27,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -79,6 +82,8 @@ public class Personal_Page  extends Fragment {
         PersonalPage_Headimg=(ImageView)view.findViewById(R.id.PersonalPage_Headimg);
         PersonalPage_Username=(TextView) view.findViewById(R.id.PersonalPage_Username);
 
+        PersonalPage_Username.setText(gv.getUserName());
+
         PersonalPage_UserNumOfInf=(TextView) view.findViewById(R.id.PersonalPage_UserNumOfInf);
 
         PersonalPage_Headimg.setImageBitmap(openImage(Cache_Head_Path+gv.getUserName()+".jpg"));
@@ -101,11 +106,11 @@ public class Personal_Page  extends Fragment {
 
                     outputStream.flush();
 
-                    outputStream.close();
-                    socket.close();
+                    //outputStream.close();
+                    //socket.close();
 
                     //接收状态
-                    socket = new Socket(HOST, PORT);
+                    //socket = new Socket(HOST, PORT);
                     DataInputStream inputStream = new DataInputStream(socket.getInputStream());
                     //int GetRowNumber = 0;
                     String s = "";
@@ -154,8 +159,6 @@ public class Personal_Page  extends Fragment {
 
 
 
-
-
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
@@ -170,8 +173,16 @@ public class Personal_Page  extends Fragment {
                     Intent i = new Intent(getActivity() , MessageSelf_Page.class);
                     startActivity(i);
                 }
-                else{
+                else if(position==2){
+                    //退出登录
+                    SharedPreferences preferences = getActivity().getSharedPreferences("Name_Schoolname", Activity.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = preferences .edit();
+                    editor.putString("UserName", null);
+                    editor.putString("SchoolName", null);
+                    editor.commit();//写入
 
+                    Intent i = new Intent(getActivity() , SignIn_Page.class);
+                    startActivity(i);
                 }
 
 
@@ -204,17 +215,92 @@ public class Personal_Page  extends Fragment {
         listItem.add(Logoutitem);
 
     }
-    public static Bitmap openImage(String path) {
+
+
+    public Bitmap openImage(final String path) {
         Bitmap bitmap = null;
         try {
             BufferedInputStream bis = new BufferedInputStream(new FileInputStream(path));
             bitmap = BitmapFactory.decodeStream(bis);
             bis.close();
+            if(bitmap==null)
+                throw new FileNotFoundException();
+
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            Log.d("tx不存在", "openHeadImage:");
+            //从服务器获取头像
+            final Bitmap[] bb = {null};
+            Thread himg = new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        String state = Status.GetUserHeadImg;
+                        Socket socket = new Socket(HOST, PORT + 2);
+                        JSONObject Sending = new JSONObject();
+
+                        String Username = path.replace(Cache_Head_Path, "");
+                        Username = Username.replace(".jpg", "");
+
+                        Sending.put("Status", state);
+
+                        Sending.put("Username", Username);
+
+                        //写入String
+                        String msg = Sending.toString();
+                        DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
+                        outputStream.writeUTF(msg);
+
+                        outputStream.flush();
+
+                        DataInputStream inputStream = new DataInputStream(socket.getInputStream());
+
+                        System.out.println("接收服务器的头像");
+                        long size = inputStream.readLong();
+                        byte[] data = new byte[(int) size];
+                        int len = 0;
+                        while (len < size) {
+                            len += inputStream.read(data, len, (int) size - len);
+                        }
+
+                        //ByteArrayOutputStream outPut = new ByteArrayOutputStream();
+                        if (data == null)
+                            Log.d("data", "null");
+
+                        //inputStream.close();
+                        socket.close();
+
+                        bb[0] = BitmapFactory.decodeByteArray(data, 0, data.length);
+
+
+                        FileOutputStream fileOutputStream =
+                                new FileOutputStream(Cache_Head_Path+Username+".jpg");
+                        bb[0].compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+                        fileOutputStream.close();
+
+
+                        outputStream.close();
+                        socket.close();
+
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            });
+
+            himg.start();
+            try {
+                himg.join();
+            }catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            return bb[0];
         } catch (IOException e) {
             e.printStackTrace();
         }
         return bitmap;
     }
+
 }

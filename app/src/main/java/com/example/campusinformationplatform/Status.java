@@ -18,10 +18,19 @@ public class Status {
     public static final String SendMessage_State="Send_Message_Msg";//向服务器发送留言
     public static final String GetMessage_State="Send_GetMessage_Msg";//向服务器请求留言
 
+    public static final String SendForgetPassword_State="Send_ForgetPassword_Msg";//向服务器请求更改密码
+    public static final String Re_ForgetPassword_Username_Exist_State="Username_Exist";//用户存在
+
+    public static final String SendForgetPasswordUpdate_State="Send_ForgetPasswordUpdate_Msg";//向服务器更改密码
+
+    public static final String SendUpdateReleaseinf_State="Send_UpdateReleaseinf_Msg";//向服务器发送编辑请求
+
     public static final String GetUserNumberOfInf="Send_GetUserNumberOfInf_Msg";//获取信息数量
 
     public static final String GetUserselfRelease="Send_GetUserselfRelease_Msg";//向服务器获取用户发布的信息
     public static final String GetUserselfMessage="Send_GetUserselfMessage_Msg";//向服务器获取用户发布的信息
+
+    public static final String GetUserHeadImg="Send_GetUserHeadImg_Msg";//向服务器获取用户头像
 
     public static final String DeleteUserRelease="Send_DelUserselfRelease_Msg";//删除发布
     public static final String DeleteUserMessage="Send_DelUserselfMessage_Msg";//删除留言

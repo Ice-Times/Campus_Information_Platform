@@ -122,13 +122,13 @@ public class ReleaseSelf_Page extends AppCompatActivity {
 
 
         //item点击事件
-        adapt.setOnItemDeleteClickListener(new SelfReleaselistAdapt.onItemDeleteListener() {
+        adapt.setOnItemClickListener(new SelfReleaselistAdapt.onItemListener() {
             @Override
-            public void onDeleteClick(View v,int i) {
-//                listItem.remove(i);
-//                Toast.makeText(ReleaseSelf_Page.this, "delete item:" + i, Toast.LENGTH_SHORT).show();
-//                adapt.notifyDataSetChanged();
-                showPopupMenu(v,i);
+            public void onClick(View v,int pos) {
+
+                gv.setUpdate_Releaseid(listItem.get(pos).get("releaseid").toString());
+                Log.d("Pos", String.valueOf(pos)+"   " +listItem.get(pos).get("releaseid"));
+                showPopupMenu(v,pos);
 
             }
 
@@ -179,14 +179,13 @@ public class ReleaseSelf_Page extends AppCompatActivity {
 
                                     outputStream.flush();
 
-                                    outputStream.close();
-                                    socket.close();
+                                    //outputStream.close();
+                                    //socket.close();
 
 
-                                    //
 
                                     //接收状态
-                                    socket = new Socket(HOST, PORT);
+                                    //socket = new Socket(HOST, PORT);
                                     DataInputStream inputStream = new DataInputStream(socket.getInputStream());
                                     //int GetRowNumber = 0;
                                     String s = "";
@@ -295,14 +294,14 @@ public class ReleaseSelf_Page extends AppCompatActivity {
 
                     outputStream.flush();
 
-                    outputStream.close();
-                    socket.close();
+                    //outputStream.close();
+                    //socket.close();
 
 
                     //
 
                     //接收状态
-                    socket = new Socket(HOST, PORT);
+                    //socket = new Socket(HOST, PORT);
                     DataInputStream inputStream = new DataInputStream(socket.getInputStream());
                     //int GetRowNumber = 0;
                     String s = "";
@@ -323,21 +322,7 @@ public class ReleaseSelf_Page extends AppCompatActivity {
 
                     //Log.d("", s);
                     final JSONArray Server_JsonArray = new JSONArray(s);
-                    //ArrayList<HashMap<String, Object>> listItem = new ArrayList<HashMap<String, Object>>();
-//                    for (int i = 0; i < Server_JsonArray.length(); i++) {
-//                        HashMap<String, Object> item = new HashMap<String, Object>();
-//
-//                        JSONObject jo = Server_JsonArray.getJSONObject(i);
-//                        item.put("isEnd", "false");
-//                        item.put("releaseid", jo.getString("releaseid"));
-//                        item.put("SelfType", jo.getString("type"));
-//                        item.put("SelfTitle", jo.getString("title"));
-//                        item.put("SelfReleasedate", jo.getString("release_date"));
-//                        item.put("SelfDescribe", jo.getString("ddescribe"));
-//
-//                        listItem.add(item);
-//
-//                    }
+
 
                     new Handler(context.getMainLooper()).post(new Runnable() {
                         @Override
@@ -380,8 +365,6 @@ public class ReleaseSelf_Page extends AppCompatActivity {
 
 
     }
-
-
 
     private void showPopupMenu(final View view, final int position) {
         // View当前PopupMenu显示的相对View的位置
@@ -436,6 +419,13 @@ public class ReleaseSelf_Page extends AppCompatActivity {
 
                 }
 
+                else if (item.getTitle().equals("编辑")){
+
+                    //gv.setUpdate_Releaseid();
+                    Intent i = new Intent(ReleaseSelf_Page.this , UpdateRelease.class);
+                    startActivity(i);
+
+                }
 
                 return false;
             }

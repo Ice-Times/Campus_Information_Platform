@@ -93,10 +93,9 @@ public class SelfReleaselistAdapt extends BaseAdapter {
         zj.SelfIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mOnItemDeleteListener.onDeleteClick(v,position);
+                mOnItemListener.onClick(v,position);
             }
         });
-
 
         if(((String) listItem.get(position).get("isEnd")).equals("false")) {
             zj.SelfType.setText((String) listItem.get(position).get("SelfType"));
@@ -104,13 +103,7 @@ public class SelfReleaselistAdapt extends BaseAdapter {
             zj.SelfReleasedate.setText("发布于 " + (String) listItem.get(position).get("SelfReleasedate"));
             zj.SelfDescribe.setText((String) listItem.get(position).get("SelfDescribe"));
 
-//            zj.SelfIcon.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Log.d("zjzj", "onClick: ");
-//                    showPopupMenu(v,position);
-//                }
-//            });
+
         }
         else{
             zj.SelfType.setText("暂无更多数据");
@@ -133,16 +126,16 @@ public class SelfReleaselistAdapt extends BaseAdapter {
     }//这个方法返回了指定索引对应的数据项的视图
 
     /**
-     * 删除按钮的监听接口
+     * 按钮的监听接口
      */
-    public interface onItemDeleteListener {
-        void onDeleteClick(View v,int i);
+    public interface onItemListener {
+        void onClick(View v,int i);
     }
 
-    private onItemDeleteListener mOnItemDeleteListener;
+    private onItemListener mOnItemListener;
 
-    public void setOnItemDeleteClickListener(onItemDeleteListener mOnItemDeleteListener) {
-        this.mOnItemDeleteListener = mOnItemDeleteListener;
+    public void setOnItemClickListener(onItemListener mOnItemListener) {
+        this.mOnItemListener = mOnItemListener;
     }
 
 

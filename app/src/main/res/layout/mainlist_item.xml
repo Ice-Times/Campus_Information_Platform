@@ -55,6 +55,8 @@
             android:id="@+id/Item_Describe"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="2"
             android:text="Describe"
             android:textSize="17sp" />
 

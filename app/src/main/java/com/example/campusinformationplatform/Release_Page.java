@@ -192,8 +192,8 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
 
                                 gv.setEnlargeImage(EnlargeImage);
 
-//                                Intent i = new Intent(Release_Page.this , EnlargeImg_Page.class);
-//                                startActivity(i);
+                                Intent i = new Intent(Release_Page.this , EnlargeImg_Page.class);
+                                startActivity(i);
 
                             }else if(clickNum==2){//双击,删除图片
                                 Log.d("", "双击");
@@ -222,6 +222,7 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
                 Log.d("", "发布");
                 new Thread(new Runnable() {
                     public void run() {
+                        String Re_State="";
                         try{
 
                             String title=title_Edittext.getText().toString();
@@ -250,7 +251,7 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
 
                             try {
                                 JSONObject Sending=new JSONObject();
-                                Sending.put("UserName", "ice");
+                                Sending.put("UserName", gv.getUserName());
                                 Sending.put("Status", state);
                                 Sending.put("Type", checkBoxName);
                                 Sending.put("Title", title);
@@ -300,13 +301,24 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
 
                                 }
                                 outputStream.flush();
-                                outputStream.close();
+                                //outputStream.close();
 
                             }catch(Exception e){
                                 System.out.println("发送异常");
                                 e.printStackTrace();
                             }
 
+                            //socket.close();
+
+                            DataInputStream inputStream=new DataInputStream(socket.getInputStream());
+
+
+                            System.out.println("接收服务器的数据");
+                            Re_State=inputStream.readUTF();
+
+                            Log.d("服务器发送的数据为 ", Re_State);
+
+                            inputStream.close();
                             socket.close();
 
                         }catch(Exception e){
@@ -314,27 +326,9 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
                             e.printStackTrace();
                         }
 
-                        String Re_State="";
-                        try{
-
-                        Socket socket = new Socket(HOST, PORT);
-
-                        DataInputStream inputStream=new DataInputStream(socket.getInputStream());
 
 
-                            System.out.println("接收服务器的数据");
-                            Re_State=inputStream.readUTF();
-
-
-
-                        Log.d("服务器发送的数据为 ", Re_State);
-
-                        inputStream.close();
-                        socket.close();
-                        }catch(Exception e){
-                            System.out.println("接收服务器数据异常");
-                            e.printStackTrace();
-                        }
+                        //Socket socket = new Socket(HOST, PORT);
 
                         Handler mainHandler = new Handler(Looper.getMainLooper());
                         final String finalRe_State = Re_State;
@@ -346,7 +340,6 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
                                     Show_Release_Success();
                                 else
                                     Show_Release_Err();
-
 
                             }
                         });
@@ -606,6 +599,7 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //ToDo: 你想做的事情
                         Intent intent = new Intent(Release_Page.this , Main_Page.class);
+                        intent.putExtra("Inf","Refersh");
                         startActivity(intent);
                         dialogInterface.dismiss();
                     }

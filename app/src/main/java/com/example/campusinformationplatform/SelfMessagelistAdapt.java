@@ -63,11 +63,9 @@ public class SelfMessagelistAdapt extends BaseAdapter {
             zj = new SelfMessagelistAdapt.itemStruct();
             convertView = mInflater.inflate(R.layout.message_self_list_item, null);
 
-
             zj.SelfTitle=(TextView)convertView.findViewById(R.id.Message_Self_Title);
             zj.SelfReleasedate=(TextView)convertView.findViewById(R.id.Message_Self_Date);
             zj.SelfMessage=(TextView)convertView.findViewById(R.id.Message_Self_Message);
-
 
             zj.SelfIcon=(ImageView) convertView.findViewById(R.id.Message_Self_Icon);
             convertView.setTag(zj);
@@ -98,7 +96,6 @@ public class SelfMessagelistAdapt extends BaseAdapter {
             zj.SelfReleasedate.setHeight(0);
             zj.SelfMessage.setHeight(0);
 
-            //zj.SelfTitle.setText(null);
             zj.SelfReleasedate.setText(null);
             zj.SelfMessage.setText(null);
 
@@ -112,7 +109,7 @@ public class SelfMessagelistAdapt extends BaseAdapter {
     }//这个方法返回了指定索引对应的数据项的视图
 
     /**
-     * 删除按钮的监听接口
+     * 按钮的监听接口
      */
     public interface onItemListener {
         void onClick(View v,int i);

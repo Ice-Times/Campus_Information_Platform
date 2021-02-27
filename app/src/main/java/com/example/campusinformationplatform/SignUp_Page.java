@@ -1,5 +1,6 @@
 package com.example.campusinformationplatform;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -55,12 +56,21 @@ public class SignUp_Page extends AppCompatActivity {
             "你的出生年月是多少?",
             "你喜欢什么科目?"};
 
+    private static final String[] SchoolName = {
+            "中山大学",
+            "暨南大学",
+            "华南理工大学",
+            "广东工业大学"};
+
+
     //用户名
     private EditText UserName;
     //用户密码
     private EditText UserPassword;
     //用户头像
     //private ImageView UserImg;
+    //用户学校
+    private String UserSchoolName;
     //用户密保问题
     private String UserSecQes;
     //用户密保答案
@@ -93,10 +103,12 @@ public class SignUp_Page extends AppCompatActivity {
         Cache_Head_Path=gv.getCache_Head_Path();
 
         //隐藏标题栏
-        if (getSupportActionBar() != null){
-            getSupportActionBar().hide();
-        }
+//        if (getSupportActionBar() != null){
+//            getSupportActionBar().hide();
+//        }
 
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         //添加用户头像
         Add_Image = (ImageView) findViewById(R.id.Sign_Up_Img_UserHeadImg);
@@ -126,6 +138,18 @@ public class SignUp_Page extends AppCompatActivity {
         //设置默认值
         spinner.setVisibility(View.VISIBLE);
 
+        Spinner Spinner_SchoolName = (Spinner) findViewById(R.id.Spinner_SchoolName);
+        ArrayAdapter<String> SchoolAdapter = new ArrayAdapter<String>
+                (this, android.R.layout.simple_spinner_item, SchoolName);
+        //设置下拉列表的风格
+        SchoolAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //将adapter 添加到spinner中
+        Spinner_SchoolName.setAdapter(SchoolAdapter);
+        //添加事件Spinner事件监听
+        Spinner_SchoolName.setOnItemSelectedListener(new SchoolSpinnerSelectedListener());
+        //设置默认值
+        Spinner_SchoolName.setVisibility(View.VISIBLE);
+
 
         UserName = (EditText) findViewById(R.id.Sign_Up_EditText_UserName);
         UserPassword = (EditText) findViewById(R.id.Sign_Up_EditText_UserPassWord);
@@ -143,16 +167,7 @@ public class SignUp_Page extends AppCompatActivity {
                     new Thread(new Runnable() {
                         public void run() {
                             try {
-                                //Status s=new Status();
                                 String state=Status.SignUp_State;
-//                                String sendmsg = "";
-//
-//                                sendmsg = "\""+state+"\"   \"" + UserName.getText() + "\"    \""
-//                                        + UserPassword.getText() + "\"    \""
-//                                        + UserSecQes + "\"    \""
-//                                        + UserSecAns.getText() + "\"";
-
-
 
                                 Socket socket = new Socket(HOST, PORT);
 
@@ -166,6 +181,7 @@ public class SignUp_Page extends AppCompatActivity {
                                     Sending.put("Status", state);
                                     Sending.put("UserName", UserName.getText());
                                     Sending.put("UserPassword", UserPassword.getText());
+                                    Sending.put("SchoolName", UserSchoolName);
                                     Sending.put("UserSecQes", UserSecQes);
                                     Sending.put("UserSecAns", UserSecAns.getText());
                                     String  result=Sending.toString();
@@ -187,18 +203,24 @@ public class SignUp_Page extends AppCompatActivity {
 
                                     } catch (FileNotFoundException e) {
                                         e.printStackTrace();
-                                    } catch (IOException e) {
+                                    } catch (Exception e) {
+                                        Bitmap bm = BitmapFactory.decodeResource( getResources(), R.drawable.defaultheadimg);
+                                        File file = new File(Cache_Temp_PATH + "temp.jpg");
+                                        FileOutputStream outStream = new FileOutputStream(file);
+                                        bm.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
+                                        User_Img=bm;
+                                        outStream.flush();
+                                        outStream.close();
                                         e.printStackTrace();
                                     } finally {
                                         try {
                                             if (fos != null) {
                                                 fos.close();
                                             }
-                                        } catch (IOException e) {
+                                        } catch (Exception e) {
                                             e.printStackTrace();
                                         }
                                     }
-
 
 
                                     File Temp_Img = new File(Cache_Temp_PATH, "temp.jpg");
@@ -207,7 +229,7 @@ public class SignUp_Page extends AppCompatActivity {
 
                                     }
 
-                                    Temp_Img = new File(Cache_Temp_PATH + "temp.jpg");
+                                    //Temp_Img = new File(Cache_Temp_PATH + "temp.jpg");
                                     outputStream.writeLong(Temp_Img.length());
 
                                     byte[] data = new byte[(int) Temp_Img.length()];
@@ -218,19 +240,20 @@ public class SignUp_Page extends AppCompatActivity {
 
                                     outputStream.flush();
 
-                                    inputStream.close();
-                                    outputStream.close();
+                                    //inputStream.close();
+                                    //outputStream.close();
 
 
                                     Log.d("输出到服务器完成", "66 ");
                                 } catch (Exception e) {
+                                    e.printStackTrace();
                                     Log.d("输出到服务器失败", "00 ");
                                 }
 
-                                socket.close();
+                                //socket.close();
 
 
-                                socket = new Socket(HOST, PORT);
+                                //socket = new Socket(HOST, PORT);
 
                                 DataInputStream inputStream=new DataInputStream(socket.getInputStream());
 
@@ -366,6 +389,20 @@ public class SignUp_Page extends AppCompatActivity {
         }
     }
 
+    //使用数组形式操作
+    class SchoolSpinnerSelectedListener implements AdapterView.OnItemSelectedListener {
+
+        public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
+                                   long arg3) {
+            Log.d("", "onItemSelected: " + SchoolName[arg2]);
+            UserSchoolName = SchoolName[arg2];
+
+        }
+
+        public void onNothingSelected(AdapterView<?> arg0) {
+        }
+    }
+
     public boolean CheckUserName() {
         //是否为空
         if (TextUtils.isEmpty(UserName.getText().toString())) {
@@ -399,7 +436,7 @@ public class SignUp_Page extends AppCompatActivity {
 
 
         //是否为6-12字母数字
-        Pattern p = Pattern.compile("^\\w{2,12}$");
+        Pattern p = Pattern.compile("^\\w{6,12}$");
         Matcher m = p.matcher(UserPassword.getText().toString());
         if (!m.matches()) {
             Toast.makeText(getApplicationContext(), "密码不为6-12字母数字", Toast.LENGTH_LONG).show();
@@ -432,19 +469,6 @@ public class SignUp_Page extends AppCompatActivity {
         return true;
     }
 
-//
-//    public void WriteToFile(String destination, InputStream input) throws IOException {
-//        int index;
-//        byte[] bytes = new byte[1024];
-//        FileOutputStream downloadFile = new FileOutputStream(destination);
-//        while ((index = input.read(bytes)) != -1) {
-//            downloadFile.write(bytes, 0, index);
-//            downloadFile.flush();
-//        }
-//        input.close();
-//        downloadFile.close();
-//        //System.out.println("xie ru cg");
-//    }
 
     private void Show_SignUp_Err1() {//用户存在
 
@@ -482,6 +506,9 @@ public class SignUp_Page extends AppCompatActivity {
                         //ToDo: 你想做的事情
 
                         dialogInterface.dismiss();
+                        finish();
+//                        Intent i = new Intent(SignUp_Page.this, SignIn_Page.class);
+//                        startActivity(i);
                     }
                 });
         builder.create().show();

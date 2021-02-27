@@ -61,7 +61,6 @@ public class MessagelistAdapt extends BaseAdapter {
             zj.MessageReleasedate=(TextView)convertView.findViewById(R.id.MessageItem_ReleaseDate);
             zj.Message=(TextView)convertView.findViewById(R.id.MessageItem_Message);
 
-
             convertView.setTag(zj);
         }
         else {
@@ -74,8 +73,6 @@ public class MessagelistAdapt extends BaseAdapter {
         zj.MessageUsername.setText((String) listItem.get(position).get("MessageUsername"));
         zj.MessageReleasedate.setText((String) listItem.get(position).get("MessageReleasedate"));
         zj.Message.setText((String) listItem.get(position).get("Message"));
-
-
 
         return convertView;
     }//这个方法返回了指定索引对应的数据项的视图

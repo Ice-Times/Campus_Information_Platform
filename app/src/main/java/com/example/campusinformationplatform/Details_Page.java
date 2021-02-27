@@ -36,6 +36,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -196,11 +197,11 @@ public class Details_Page extends AppCompatActivity {
 
                             outputStream.flush();
 
-                            outputStream.close();
-                            socket.close();
+                            //outputStream.close();
+                            //socket.close();
 
                             String Re_State="";
-                            socket = new Socket(HOST, PORT);
+                            //socket = new Socket(HOST, PORT);
 
                             DataInputStream inputStream=new DataInputStream(socket.getInputStream());
 
@@ -290,7 +291,7 @@ public class Details_Page extends AppCompatActivity {
         Thread infThread=new Thread(new Thread(new Runnable() {
             public void run() {
                 try {
-                    Socket socket = new Socket(HOST, PORT);
+                    Socket socket = new Socket(HOST, PORT+5);
                     DataInputStream inputStream = new DataInputStream(socket.getInputStream());
 
                     String msg = "";
@@ -364,10 +365,10 @@ public class Details_Page extends AppCompatActivity {
                         System.out.println("fs的数据:"+smsg);
                         outputStream.flush();
 
-                        outputStream.close();
-                        socket.close();
+                        //outputStream.close();
+                        //socket.close();
 
-                        socket = new Socket(HOST, PORT+1);
+                        //socket = new Socket(HOST, PORT+1);
                         DataInputStream inputStream = new DataInputStream(socket.getInputStream());
 
                         try {
@@ -418,87 +419,6 @@ public class Details_Page extends AppCompatActivity {
                     }
 
 
-//                    for (int i = 0; i < listItem.size(); i++) {
-//                        if (listItem.get(i).get("Picrelease") == null) {
-//                            System.out.println("添加图片："+listItem.get(i).get("releaseid"));
-//                            String state = Status.GetInformtionPic_State;
-//                            socket = new Socket(HOST, PORT);
-//                            JSONObject Sending = new JSONObject();
-//
-//                            Sending.put("Status", state);
-//                            Sending.put("releaseid", listItem.get(i).get("releaseid"));
-//
-//                            String smsg = Sending.toString();
-//
-//                            DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
-//                            outputStream.writeUTF(smsg);
-//
-//                            outputStream.flush();
-//
-//                            outputStream.close();
-//                            socket.close();
-//
-//
-//                            socket = new Socket(HOST, PORT);
-//                            DataInputStream inputStream = new DataInputStream(socket.getInputStream());
-//
-//                            try {
-//                                System.out.println("接收服务器的数据");
-//                                long size = inputStream.readLong();
-//                                byte[] data = new byte[(int) size];
-//                                int len = 0;
-//                                while (len < size) {
-//                                    len += inputStream.read(data, len, (int) size - len);
-//                                }
-//
-//
-//                                //ByteArrayOutputStream outPut = new ByteArrayOutputStream();
-//                                if (data == null)
-//                                    Log.d("data", "null");
-//
-//                                //inputStream.close();
-//                                socket.close();
-//
-//                                final Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-//
-//                                final Bitmap showBitmap = getScaleBitmap(bitmap);
-//
-//                                final int finalI = i;
-//                                Handler mainHandler = new Handler(Looper.getMainLooper());
-//                                mainHandler.post(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-//                                        //Bitmap headimg = openImage(Cache_Head_Path + "ice.jpg");
-//                                        listItem.get(finalI).remove("Picrelease");
-//                                        listItem.get(finalI).put("Picrelease", showBitmap);
-//
-//                                        adapt.notifyDataSetChanged();
-//
-//
-//                                    }
-//                                });
-//                                System.out.println("接收服务器数据成功");
-//
-//
-//                                socket = new Socket(HOST, PORT);
-//                                outputStream = new DataOutputStream(socket.getOutputStream());
-//                                outputStream.writeUTF(smsg);
-//                                System.out.println("发送图片信息");
-//
-//                                outputStream.flush();
-//
-//                                outputStream.close();
-//                                socket.close();
-//
-//
-//                            } catch (Exception e) {
-//                                System.out.println("接收服务器数据异常");
-//                                e.printStackTrace();
-//                            }
-//
-//
-//                        }
-//                    }
 
                 } catch (Exception e) {
                     System.out.println("接收服务器数据异常");
@@ -532,11 +452,11 @@ public class Details_Page extends AppCompatActivity {
 
                     outputStream.flush();
 
-                    outputStream.close();
-                    socket.close();
+                    //outputStream.close();
+                    //socket.close();
 
                     //接收状态
-                    socket = new Socket(HOST, PORT);
+                    //socket = new Socket(HOST, PORT);
                     DataInputStream inputStream = new DataInputStream(socket.getInputStream());
 
                     String s = "";
@@ -602,14 +522,83 @@ public class Details_Page extends AppCompatActivity {
 
 
 
-    public static Bitmap openImage(String path) {
+    public Bitmap openImage(final String path) {
         Bitmap bitmap = null;
         try {
             BufferedInputStream bis = new BufferedInputStream(new FileInputStream(path));
             bitmap = BitmapFactory.decodeStream(bis);
             bis.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            Log.d("tx不存在", "openHeadImage:");
+            //从服务器获取头像
+            final Bitmap[] bb = {null};
+            Thread himg = new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        String state = Status.GetUserHeadImg;
+                        Socket socket = new Socket(HOST, PORT + 2);
+                        JSONObject Sending = new JSONObject();
+
+                        String Username = path.replace(Cache_Head_Path, "");
+                        Username = Username.replace(".jpg", "");
+
+                        Sending.put("Status", state);
+
+                        Sending.put("Username", Username);
+
+                        //写入String
+                        String msg = Sending.toString();
+                        DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
+                        outputStream.writeUTF(msg);
+
+                        outputStream.flush();
+
+                        DataInputStream inputStream = new DataInputStream(socket.getInputStream());
+
+                        System.out.println("接收服务器的头像");
+                        long size = inputStream.readLong();
+                        byte[] data = new byte[(int) size];
+                        int len = 0;
+                        while (len < size) {
+                            len += inputStream.read(data, len, (int) size - len);
+                        }
+
+                        //ByteArrayOutputStream outPut = new ByteArrayOutputStream();
+                        if (data == null)
+                            Log.d("data", "null");
+
+                        //inputStream.close();
+                        socket.close();
+
+                        bb[0] = BitmapFactory.decodeByteArray(data, 0, data.length);
+
+
+                        FileOutputStream fileOutputStream =
+                                new FileOutputStream(Cache_Head_Path+Username+".jpg");
+                        bb[0].compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+                        fileOutputStream.close();
+
+
+                        outputStream.close();
+                        socket.close();
+
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            });
+
+            himg.start();
+            try {
+                himg.join();
+            }catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            return bb[0];
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -679,12 +668,12 @@ public class Details_Page extends AppCompatActivity {
 
                     outputStream.flush();
 
-                    outputStream.close();
-                    socket.close();
+                    //outputStream.close();
+                    //socket.close();
 
 
                     //接收状态
-                    socket = new Socket(HOST, PORT+1);
+                    //socket = new Socket(HOST, PORT+1);
                     DataInputStream inputStream = new DataInputStream(socket.getInputStream());
 
                     String s = "";
@@ -810,12 +799,12 @@ public class Details_Page extends AppCompatActivity {
 
                     outputStream.flush();
 
-                    outputStream.close();
-                    socket.close();
+                    //outputStream.close();
+                    //socket.close();
 
 
                     //接收状态
-                    socket = new Socket(HOST, PORT);
+                    //socket = new Socket(HOST, PORT);
                     DataInputStream inputStream = new DataInputStream(socket.getInputStream());
 
                     String s = "";

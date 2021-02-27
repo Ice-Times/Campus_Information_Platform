@@ -169,12 +169,12 @@ public class MessageSelf_Page extends AppCompatActivity {
 
                                     outputStream.flush();
 
-                                    outputStream.close();
-                                    socket.close();
+                                    //outputStream.close();
+                                    //socket.close();
 
 
                                     //接收状态
-                                    socket = new Socket(HOST, PORT);
+                                    //socket = new Socket(HOST, PORT);
                                     DataInputStream inputStream = new DataInputStream(socket.getInputStream());
                                     //int GetRowNumber = 0;
                                     String s = "";
@@ -285,12 +285,12 @@ public class MessageSelf_Page extends AppCompatActivity {
 
                     outputStream.flush();
 
-                    outputStream.close();
-                    socket.close();
+                    //outputStream.close();
+                    //socket.close();
 
 
                     //接收状态
-                    socket = new Socket(HOST, PORT);
+                    //socket = new Socket(HOST, PORT);
                     DataInputStream inputStream = new DataInputStream(socket.getInputStream());
                     String s = "";
                     try {
@@ -358,7 +358,7 @@ public class MessageSelf_Page extends AppCompatActivity {
         PopupMenu popupMenu = new PopupMenu(context, view);
 
         // menu布局
-        popupMenu.getMenuInflater().inflate(R.menu.self_release_menu, popupMenu.getMenu());
+        popupMenu.getMenuInflater().inflate(R.menu.self_message_menu, popupMenu.getMenu());
         // menu的item点击事件
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override

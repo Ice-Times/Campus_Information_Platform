@@ -20,8 +20,12 @@ public class Global_Value extends Application {
 
     public String UserName;
 
+    public String SchoolName;
+
     public String Details_Releaseid;
     public ArrayList<Uri> EnlargeImage;
+
+    public String Update_Releaseid;
 
     @Override
     public void onCreate() {
@@ -50,6 +54,8 @@ public class Global_Value extends Application {
 
             UserName="";
             Details_Releaseid="";
+
+            Update_Releaseid="";
         }catch (Exception e) {
             e.printStackTrace();
         }
@@ -90,7 +96,7 @@ public class Global_Value extends Application {
     }
 
     public ArrayList<Uri> getEnlargeImage(){
-        return getEnlargeImage();
+        return EnlargeImage;
     }
 
     public void setEnlargeImage(ArrayList<Uri> EnlargeImage){
@@ -111,6 +117,21 @@ public class Global_Value extends Application {
     }
     public  String getDetails_Releaseid(){
         return Details_Releaseid;
+    }
+
+    public void setSchoolName(String Schoolname){
+
+        this.SchoolName=Schoolname;
+    }
+    public String getSchoolName(){
+        return SchoolName;
+    }
+
+    public void setUpdate_Releaseid(String s){
+        Update_Releaseid=s;
+    }
+    public  String getUpdate_Releaseid(){
+        return Update_Releaseid;
     }
 
 }
