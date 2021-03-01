@@ -1,5 +1,6 @@
 package com.example.campusinformationplatform;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 
@@ -66,9 +67,13 @@ public class ReleaseSelf_Page extends AppCompatActivity {
         HOST = gv.getHost();
         PORT = gv.getPort();
 
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        actionBar.setTitle("我的发布");
+
         PullToRefreshListView = (PullToRefreshListView) findViewById(R.id.Self_Release_Pull_Refresh_List);
         listview = PullToRefreshListView.getRefreshableView();
-
         listItem = new ArrayList<HashMap<String, Object>>();
         adapt = new SelfReleaselistAdapt(this, listItem);
 
@@ -362,7 +367,6 @@ public class ReleaseSelf_Page extends AppCompatActivity {
         });
 
         infThread.start();
-
 
     }
 

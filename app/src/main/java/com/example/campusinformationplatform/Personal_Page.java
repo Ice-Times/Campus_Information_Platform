@@ -165,15 +165,20 @@ public class Personal_Page  extends Fragment {
                 Log.d(String.valueOf(id), "onItemClick: ");
 
                 if(position==0){
+                    //我的收藏
+                    Intent i = new Intent(getActivity() , FavoriteSelf_Page.class);
+                    startActivity(i);
+                }
+                else if(position==1){
                     //我的发布
                     Intent i = new Intent(getActivity() , ReleaseSelf_Page.class);
                     startActivity(i);
-                }else if(position==1){
+                }else if(position==2){
                     //我的留言
                     Intent i = new Intent(getActivity() , MessageSelf_Page.class);
                     startActivity(i);
                 }
-                else if(position==2){
+                else if(position==3){
                     //退出登录
                     SharedPreferences preferences = getActivity().getSharedPreferences("Name_Schoolname", Activity.MODE_PRIVATE);
                     SharedPreferences.Editor editor = preferences .edit();
@@ -206,10 +211,16 @@ public class Personal_Page  extends Fragment {
         Messageitem.put("Functionicon",R.mipmap.messageicon);
         Messageitem.put("Functiontext","我的留言");
 
+        HashMap<String, Object> Favoriteitem= new HashMap<String, Object>();
+        Favoriteitem.put("Functionicon",R.mipmap.messageicon);
+        Favoriteitem.put("Functiontext","我的收藏");
+
+
         HashMap<String, Object> Logoutitem= new HashMap<String, Object>();
         Logoutitem.put("Functionicon",R.mipmap.logouticon);
         Logoutitem.put("Functiontext","退出登录");
 
+        listItem.add(Favoriteitem);
         listItem.add(Releaseitem);
         listItem.add(Messageitem);
         listItem.add(Logoutitem);

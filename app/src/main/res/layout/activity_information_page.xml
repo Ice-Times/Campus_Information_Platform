@@ -6,8 +6,9 @@
 
     <RelativeLayout
         android:id="@+id/relativeLayout"
-        android:layout_width="405dp"
+        android:layout_width="392dp"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="9dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 

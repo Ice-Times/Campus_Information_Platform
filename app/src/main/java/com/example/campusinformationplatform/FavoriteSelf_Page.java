@@ -28,8 +28,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MessageSelf_Page extends AppCompatActivity {
-
+public class FavoriteSelf_Page extends AppCompatActivity {
 
     private Context context;
 
@@ -44,7 +43,7 @@ public class MessageSelf_Page extends AppCompatActivity {
 
     //储存数据
     private ArrayList<HashMap<String, Object>> listItem;
-    private SelfMessagelistAdapt adapt;
+    private SelfFavoritelistAdapt adapt;
 
     private ListView listview;
 
@@ -53,7 +52,13 @@ public class MessageSelf_Page extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_message_self__page);
+        setContentView(R.layout.activity_favorite_self__page);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        actionBar.setTitle("我的收藏");
+
 
         context=this;
 
@@ -62,21 +67,16 @@ public class MessageSelf_Page extends AppCompatActivity {
         HOST = gv.getHost();
         PORT = gv.getPort();
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-
-        actionBar.setTitle("我的留言");
-
-
-        PullToRefreshListView = (PullToRefreshListView) findViewById(R.id.Self_Message_Pull_Refresh_List);
+        PullToRefreshListView = (PullToRefreshListView) findViewById(R.id.Self_Favorite_Pull_Refresh_List);
         listview = PullToRefreshListView.getRefreshableView();
-
         listItem = new ArrayList<HashMap<String, Object>>();
-        adapt = new SelfMessagelistAdapt(this, listItem);
+        adapt = new SelfFavoritelistAdapt(this, listItem);
 
         listview.setAdapter(adapt);
 
         RefreshView();
+
+
 
         //listview点击事件
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -122,17 +122,16 @@ public class MessageSelf_Page extends AppCompatActivity {
             }
         });
 
-
         //item点击事件
-        adapt.setOnItemClickListener(new SelfMessagelistAdapt.onItemListener() {
+        adapt.setOnItemClickListener(new SelfFavoritelistAdapt.onItemListener() {
             @Override
-            public void onClick(View v,int i) {
-                showPopupMenu(v,i);
+            public void onClick(View v,int pos) {
+
+                showPopupMenu(v,pos);
 
             }
 
         });
-
 
         PullToRefreshListView.setMode(PullToRefreshBase.Mode.BOTH);
 
@@ -144,8 +143,7 @@ public class MessageSelf_Page extends AppCompatActivity {
                 if (refreshView.isHeaderShown()) {
                     Toast.makeText(getApplicationContext(), "下拉刷新", Toast.LENGTH_SHORT).show();
                     //下拉刷新 业务代码
-                    RefreshView();
-
+                    //RefreshView();
                     PullToRefreshListView.postDelayed(new Runnable() {
 
                         @Override
@@ -154,6 +152,7 @@ public class MessageSelf_Page extends AppCompatActivity {
                         }
                     }, 1000);
 
+
                 } else {
                     Toast.makeText(getApplicationContext(), "上拉加载更多", Toast.LENGTH_SHORT).show();
                     //上拉加载更多 业务代码
@@ -161,13 +160,14 @@ public class MessageSelf_Page extends AppCompatActivity {
                         Thread infThread = new Thread(new Runnable() {
                             public void run() {
                                 try {
-                                    String state = Status.GetUserselfMessage;
+                                    String state = Status.GetUserselfRelease;
                                     Socket socket = new Socket(HOST, PORT);
                                     JSONObject Sending = new JSONObject();
 
                                     Sending.put("Status", state);
+
                                     Sending.put("Username", gv.getUserName());
-                                    Sending.put("EndPosition", listItem.get(listItem.size() - 1).get("messageid").toString());
+                                    Sending.put("EndPosition", listItem.get(listItem.size() - 1).get("favoriteid").toString());
 
                                     //写入String
                                     String msg = Sending.toString();
@@ -176,18 +176,12 @@ public class MessageSelf_Page extends AppCompatActivity {
 
                                     outputStream.flush();
 
-                                    //outputStream.close();
-                                    //socket.close();
 
-
-                                    //接收状态
-                                    //socket = new Socket(HOST, PORT);
                                     DataInputStream inputStream = new DataInputStream(socket.getInputStream());
-                                    //int GetRowNumber = 0;
+
                                     String s = "";
                                     try {
                                         System.out.println("接收服务器的数据");
-
                                         s = inputStream.readUTF();
 
                                     } catch (Exception e) {
@@ -203,6 +197,7 @@ public class MessageSelf_Page extends AppCompatActivity {
                                     JSONArray Server_JsonArray = new JSONArray(s);
                                     if(Server_JsonArray.length()==0){
                                         isEnd=true;
+
                                         Log.d("", "trtr");
                                     }
 
@@ -210,25 +205,27 @@ public class MessageSelf_Page extends AppCompatActivity {
                                     for (int i = 0; i < Server_JsonArray.length(); i++) {
 
                                         HashMap<String, Object> item = new HashMap<String, Object>();
+
                                         JSONObject jo = Server_JsonArray.getJSONObject(i);
-                                        if(jo.getString("Re_state").equals(Status.Re_InfisEnd)) {
+                                        if(jo.getString("Re_state").equals(Status.Re_InfisEnd))
+                                        {
                                             item.put("isEnd", "true");
                                             isEnd=true;
                                         }
 
                                         else {
-
                                             item.put("isEnd", "false");
-                                            item.put("messageid", jo.getString("messageid"));
                                             item.put("releaseid", jo.getString("releaseid"));
-                                            item.put("SelfReleasedate", jo.getString("release_date"));
+                                            item.put("SelfType", jo.getString("type"));
                                             item.put("SelfTitle", jo.getString("title"));
-                                            item.put("SelfMessage", jo.getString("message"));
+                                            item.put("SelfReleasedate", jo.getString("release_date"));
+                                            item.put("SelfDescribe", jo.getString("ddescribe"));
+                                            item.put("Selffavoritedate", jo.getString("favoritedate"));
+                                            item.put("favoriteid", jo.getString("favoriteid"));
                                         }
                                         listItem.add(item);
 
                                     }
-
 
                                     new Handler(context.getMainLooper()).post(new Runnable() {
                                         @Override
@@ -263,20 +260,14 @@ public class MessageSelf_Page extends AppCompatActivity {
             }
         });
 
-
-
-
     }
 
-
     private void RefreshView(){
-
-        listItem.clear();
         isEnd=false;
         Thread infThread=new Thread(new Runnable() {
             public void run() {
                 try {
-                    String state = Status.GetUserselfMessage;
+                    String state = Status.GetUserselfFavorite;
                     Socket socket = new Socket(HOST, PORT);
                     JSONObject Sending = new JSONObject();
 
@@ -292,16 +283,12 @@ public class MessageSelf_Page extends AppCompatActivity {
 
                     outputStream.flush();
 
-                    //outputStream.close();
-                    //socket.close();
-
-
-                    //接收状态
-                    //socket = new Socket(HOST, PORT);
                     DataInputStream inputStream = new DataInputStream(socket.getInputStream());
+
                     String s = "";
                     try {
                         System.out.println("接收服务器的数据");
+
                         s = inputStream.readUTF();
 
                     } catch (Exception e) {
@@ -316,7 +303,6 @@ public class MessageSelf_Page extends AppCompatActivity {
 
                     final JSONArray Server_JsonArray = new JSONArray(s);
 
-
                     new Handler(context.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
@@ -330,17 +316,17 @@ public class MessageSelf_Page extends AppCompatActivity {
                                     jo = Server_JsonArray.getJSONObject(i);
 
                                     item.put("isEnd", "false");
-                                    item.put("messageid", jo.getString("messageid"));
                                     item.put("releaseid", jo.getString("releaseid"));
-                                    item.put("SelfReleasedate", jo.getString("release_date"));
+                                    item.put("SelfType", jo.getString("type"));
                                     item.put("SelfTitle", jo.getString("title"));
-                                    item.put("SelfMessage", jo.getString("message"));
+                                    item.put("SelfReleasedate", jo.getString("release_date"));
+                                    item.put("SelfDescribe", jo.getString("ddescribe"));
+                                    item.put("Selffavoritedate", jo.getString("favoritedate"));
+                                    item.put("favoriteid", jo.getString("favoriteid"));
                                 }catch (JSONException e) {
                                     e.printStackTrace();
                                 }
-
                                 listItem.add(item);
-
                             }
 
                             adapt.notifyDataSetChanged();
@@ -352,13 +338,8 @@ public class MessageSelf_Page extends AppCompatActivity {
                 }
             }
         });
-
         infThread.start();
-
-
     }
-
-
 
     private void showPopupMenu(final View view, final int position) {
         // View当前PopupMenu显示的相对View的位置
@@ -372,20 +353,20 @@ public class MessageSelf_Page extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 Toast.makeText(context, item.getTitle(), Toast.LENGTH_SHORT).show();
                 if(item.getTitle().equals("删除")){
-                    //item.g
-                    final String Id=(String)listItem.get(position).get("messageid");
+                    final String Id=(String)listItem.get(position).get("favoriteid");
                     Log.d("item ",Id);
                     Log.d("item ",HOST);
 
                     new Thread(new Runnable() {
                         public void run() {
                             try {
-                                String state = Status.DeleteUserMessage;
+                                String state = Status.DeleteUserFavorite;
                                 Socket socket = new Socket(HOST, PORT);
                                 JSONObject Sending = new JSONObject();
 
                                 Sending.put("Status", state);
-                                Sending.put("messageid",Id);
+
+                                Sending.put("favoriteid",Id);
 
                                 //写入String
                                 String msg = Sending.toString();
@@ -396,7 +377,6 @@ public class MessageSelf_Page extends AppCompatActivity {
 
                                 outputStream.close();
                                 socket.close();
-
 
 
                             }catch (Exception e){
@@ -427,12 +407,4 @@ public class MessageSelf_Page extends AppCompatActivity {
         popupMenu.show();
     }
 
-
-
-
-
 }
-
-
-
-

@@ -11,7 +11,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class SelfMessagelistAdapt extends BaseAdapter {
+
+public class SelfFavoritelistAdapt extends BaseAdapter {
     private LayoutInflater mInflater;//得到一个LayoutInfalter对象用来导入布局
     ArrayList<HashMap<String, Object>> listItem;
 
@@ -19,10 +20,11 @@ public class SelfMessagelistAdapt extends BaseAdapter {
 
 
 
-    public SelfMessagelistAdapt(Context context, ArrayList<HashMap<String, Object>> listItem) {
+    public SelfFavoritelistAdapt(Context context, ArrayList<HashMap<String, Object>> listItem) {
         this.mInflater = LayoutInflater.from(context);
         this.listItem = listItem;
         this.context=context;
+
 
 
     }//声明构造函数
@@ -46,10 +48,11 @@ public class SelfMessagelistAdapt extends BaseAdapter {
 
     static class itemStruct
     {
-
+        public TextView SelfType;
         public TextView SelfTitle;
         public TextView SelfReleasedate;
-        public TextView SelfMessage;
+        public TextView SelfDescribe;
+
 
         public ImageView SelfIcon;
     }//声明item结构
@@ -57,21 +60,24 @@ public class SelfMessagelistAdapt extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, final ViewGroup parent) {
-        SelfMessagelistAdapt.itemStruct zj ;
+        SelfFavoritelistAdapt.itemStruct zj ;
         if(convertView == null)
         {
-            zj = new SelfMessagelistAdapt.itemStruct();
-            convertView = mInflater.inflate(R.layout.message_self_list_item, null);
+            zj = new SelfFavoritelistAdapt.itemStruct();
+            convertView = mInflater.inflate(R.layout.release_self_list_item, null);
 
-            zj.SelfTitle=(TextView)convertView.findViewById(R.id.Message_Self_Title);
-            zj.SelfReleasedate=(TextView)convertView.findViewById(R.id.Message_Self_Date);
-            zj.SelfMessage=(TextView)convertView.findViewById(R.id.Message_Self_Message);
+            zj.SelfType=(TextView)convertView.findViewById(R.id.Release_Self_Type);
+            zj.SelfTitle=(TextView)convertView.findViewById(R.id.Release_Self_Title);
+            zj.SelfReleasedate=(TextView)convertView.findViewById(R.id.Release_Self_Date);
+            zj.SelfDescribe=(TextView)convertView.findViewById(R.id.Release_Self_Describe);
 
-            zj.SelfIcon=(ImageView) convertView.findViewById(R.id.Message_Self_Icon);
+
+            zj.SelfIcon=(ImageView) convertView.findViewById(R.id.Release_Self_Icon);
             convertView.setTag(zj);
         }
         else {
-            zj = (SelfMessagelistAdapt.itemStruct)convertView.getTag();
+            zj = (SelfFavoritelistAdapt.itemStruct)convertView.getTag();
+
         }
 
         zj.SelfIcon.setOnClickListener(new View.OnClickListener() {
@@ -81,23 +87,27 @@ public class SelfMessagelistAdapt extends BaseAdapter {
             }
         });
 
-
         if(((String) listItem.get(position).get("isEnd")).equals("false")) {
-            zj.SelfTitle.setText("主题："+(String) listItem.get(position).get("SelfTitle"));
-            zj.SelfReleasedate.setText("发布于 " + (String) listItem.get(position).get("SelfReleasedate"));
-            zj.SelfMessage.setText("留言："+(String) listItem.get(position).get("SelfMessage"));
+            zj.SelfType.setText((String) listItem.get(position).get("SelfType"));
+            zj.SelfTitle.setText((String) listItem.get(position).get("SelfTitle"));
+            zj.SelfReleasedate.setText("收藏于 " + (String) listItem.get(position).get("Selffavoritedate"));
+            zj.SelfDescribe.setText((String) listItem.get(position).get("SelfDescribe"));
 
         }
         else{
-            zj.SelfTitle.setText("暂无更多数据");
+            zj.SelfType.setText("暂无更多数据");
+            zj.SelfTitle.setText(null);
+            zj.SelfReleasedate.setText(null);
+            zj.SelfDescribe.setText(null);
+
 
             zj.SelfReleasedate.setHeight(0);
-            zj.SelfMessage.setHeight(0);
+            zj.SelfTitle.setHeight(0);
+            zj.SelfDescribe.setHeight(0);
 
-            zj.SelfReleasedate.setText(null);
-            zj.SelfMessage.setText(null);
 
             zj.SelfIcon.setVisibility(View.INVISIBLE);
+
         }
 
 
@@ -108,12 +118,12 @@ public class SelfMessagelistAdapt extends BaseAdapter {
      * 按钮的监听接口
      */
     public interface onItemListener {
-        void onClick(View v,int i);
+        void onClick(View v, int i);
     }
 
-    private SelfMessagelistAdapt.onItemListener mOnItemListener;
+    private onItemListener mOnItemListener;
 
-    public void setOnItemClickListener(SelfMessagelistAdapt.onItemListener mOnItemListener) {
+    public void setOnItemClickListener(onItemListener mOnItemListener) {
         this.mOnItemListener = mOnItemListener;
     }
 
@@ -121,7 +131,6 @@ public class SelfMessagelistAdapt extends BaseAdapter {
 
 
 }
-
 
 
 

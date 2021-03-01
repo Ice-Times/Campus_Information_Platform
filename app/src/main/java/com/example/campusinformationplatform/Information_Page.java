@@ -62,7 +62,7 @@ public class Information_Page extends Fragment {
     ListView mListView;
 
 
-    private int ImgViewSize = 500;
+    private int ImgViewSize = 580;
 
     //储存数据
     private ArrayList<HashMap<String, Object>> listItem;
@@ -178,6 +178,7 @@ public class Information_Page extends Fragment {
                                     item.put("UserHeadImg", headimg);
                                     item.put("UserName", jo.getString("username"));
                                     item.put("ReleaseDate", jo.getString("release_date"));
+                                    item.put("Title", jo.getString("title"));
                                     item.put("Describe", jo.getString("ddescribe"));
                                     item.put("Picrelease", null);
 
@@ -247,8 +248,21 @@ public class Information_Page extends Fragment {
 
                                             final Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
 
-                                            final Bitmap showBitmap = getScaleBitmap(bitmap);
+                                            final Bitmap ScaleBitmap = getScaleBitmap(bitmap);
+//                                            final  Bitmap showBitmap;
+//                                            //
+//                                            if(ScaleBitmap.getHeight()>ScaleBitmap.getWidth()){
+//                                                //比较高
+//                                                showBitmap = Bitmap.createBitmap(ScaleBitmap, 0, ScaleBitmap.getHeight()/2-150, 300, 300);
+//
+//                                            }
+//                                            else{
+//                                                showBitmap = Bitmap.createBitmap(ScaleBitmap, ScaleBitmap.getWidth()/2-150, 0, 300, 300);
+//                                            }
 
+
+
+                                            //
                                             final int finalI = i;
                                             Handler mainHandler = new Handler(Looper.getMainLooper());
                                             mainHandler.post(new Runnable() {
@@ -256,7 +270,7 @@ public class Information_Page extends Fragment {
                                                 public void run() {
 
                                                     listItem.get(finalI).remove("Picrelease");
-                                                    listItem.get(finalI).put("Picrelease", showBitmap);
+                                                    listItem.get(finalI).put("Picrelease", ScaleBitmap);
 
                                                     adapt.notifyDataSetChanged();
 
@@ -551,6 +565,7 @@ public class Information_Page extends Fragment {
                             item.put("UserHeadImg", headimg);
                             item.put("UserName", jo.getString("username"));
                             item.put("ReleaseDate", jo.getString("release_date"));
+                            item.put("Title", jo.getString("title"));
                             item.put("Describe", jo.getString("ddescribe"));
                             item.put("Picrelease", null);
 
@@ -558,7 +573,6 @@ public class Information_Page extends Fragment {
                         }
 
                     }
-
 
                     //MainlistAdapt adaptt;
                     new Handler(context.getMainLooper()).post(new Runnable() {
@@ -634,7 +648,18 @@ public class Information_Page extends Fragment {
 
                                 final Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
 
-                                final Bitmap showBitmap = getScaleBitmap(bitmap);
+                                final Bitmap ScaleBitmap = getScaleBitmap(bitmap);
+//                                final  Bitmap showBitmap;
+//                                //
+//                                if(ScaleBitmap.getHeight()>ScaleBitmap.getWidth()){
+//                                    //比较高
+//                                    showBitmap = Bitmap.createBitmap(ScaleBitmap, 0, ScaleBitmap.getHeight()/2-150, 500, 500);
+//
+//                                }
+//                                else{
+//                                    showBitmap = Bitmap.createBitmap(ScaleBitmap, ScaleBitmap.getWidth()/2-150, 0, 300, 300);
+//                                }
+
 
                                 final int finalI = i;
                                 Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -643,7 +668,7 @@ public class Information_Page extends Fragment {
                                     public void run() {
 
                                         listItem.get(finalI).remove("Picrelease");
-                                        listItem.get(finalI).put("Picrelease", showBitmap);
+                                        listItem.get(finalI).put("Picrelease",ScaleBitmap);
 
                                         adapt.notifyDataSetChanged();
 

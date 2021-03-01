@@ -44,6 +44,7 @@ public class MainlistAdapt extends BaseAdapter {
         public ImageView MainpageUserheadImg;
         public TextView MainpageUsername;
         public TextView MainpageReleasedate;
+        public TextView MainpageTitle;
         public TextView MainpageDescribe;
         public ImageView MainpagePicrelease;
     }//声明item结构
@@ -61,8 +62,9 @@ public class MainlistAdapt extends BaseAdapter {
             zj.MainpageUserheadImg=(ImageView)convertView.findViewById(R.id.Item_UserHeadImg);
             zj.MainpageUsername=(TextView)convertView.findViewById(R.id.Item_UserName);
             zj.MainpageReleasedate=(TextView)convertView.findViewById(R.id.Item_ReleaseDate);
+            zj.MainpageTitle=(TextView)convertView.findViewById(R.id.Item_Title);
             zj.MainpageDescribe=(TextView)convertView.findViewById(R.id.Item_Describe);
-            zj.MainpagePicrelease=(ImageView)convertView.findViewById(R.id.Item_PicRelease);
+            zj.MainpagePicrelease=(ImageView)convertView.findViewById(R.id.Item_PicRelease1);
 
 
             convertView.setTag(zj);
@@ -77,6 +79,7 @@ public class MainlistAdapt extends BaseAdapter {
         zj.MainpageUsername.setText((String) listItem.get(position).get("UserName"));
         zj.MainpageReleasedate.setText((String) listItem.get(position).get("ReleaseDate"));
         zj.MainpageDescribe.setText((String) listItem.get(position).get("Describe"));
+        zj.MainpageTitle.setText((String) listItem.get(position).get("Title"));
         if(listItem.get(position).get("Picrelease")!=null)
             zj.MainpagePicrelease.setImageBitmap((Bitmap) listItem.get(position).get("Picrelease"));
 

@@ -8,13 +8,21 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.List;
 
 public class Main_Page extends AppCompatActivity {
 
@@ -23,6 +31,8 @@ public class Main_Page extends AppCompatActivity {
     private Fragment[] fragments;
     private int lastfragment;//用于记录上个选择的Fragment
 
+    //退出时的时间
+    private long mExitTime;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,16 +52,16 @@ public class Main_Page extends AppCompatActivity {
         NavigationUI.setupWithNavController(navView, navController);
 
 
-        Button To_Release_Page=(Button) findViewById(R.id.To_Release_Page_Bt);
-
-        To_Release_Page.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(Main_Page.this , Release_Page.class);
-                startActivity(i);
-
-            }
-        });
+//        Button To_Release_Page=(Button) findViewById(R.id.To_Release_Page_Bt);
+//
+//        To_Release_Page.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent i = new Intent(Main_Page.this , Release_Page.class);
+//                startActivity(i);
+//
+//            }
+//        });
 
 
 
@@ -81,16 +91,16 @@ public class Main_Page extends AppCompatActivity {
                 NavigationUI.setupWithNavController(navView, navController);
 
 
-                Button To_Release_Page = (Button) findViewById(R.id.To_Release_Page_Bt);
-
-                To_Release_Page.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent i = new Intent(Main_Page.this, Release_Page.class);
-                        startActivity(i);
-
-                    }
-                });
+//                Button To_Release_Page = (Button) findViewById(R.id.To_Release_Page_Bt);
+//
+//                To_Release_Page.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        Intent i = new Intent(Main_Page.this, Release_Page.class);
+//                        startActivity(i);
+//
+//                    }
+//                });
             }
         }catch (Exception e){
             //e.printStackTrace();
@@ -99,6 +109,47 @@ public class Main_Page extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+
+            exit();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    public void exit() {
+        if ((System.currentTimeMillis() - mExitTime) > 2000) {
+            Toast.makeText(Main_Page.this, "再按一次退出当前应用程序", Toast.LENGTH_SHORT).show();
+            mExitTime = System.currentTimeMillis();
+        } else {
+            moveTaskToBack(true);
+
+        }
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.actionbar_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.action_release){
+            //todo
+            Log.d("111", "onOptionsItemSelected: ");
+
+            Intent i = new Intent(Main_Page.this , Release_Page.class);
+            startActivity(i);
+
+            return false;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
 
 }

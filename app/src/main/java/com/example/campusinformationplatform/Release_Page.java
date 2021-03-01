@@ -87,10 +87,16 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
 
     //描述中最大输入字数
     private int MaxInputWords = 500;
+
+    private Context context;
+
+    private boolean gea=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_release__page);
+
+        context=getApplicationContext();
 
         gv = (Global_Value) getApplication();
         HOST=gv.getHost();
@@ -176,11 +182,10 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
                 // TODO Auto-generated method stub
                 Log.d(String.valueOf(position), "onItemClick: ");
 
-                if(position==BitmapList.size()-1){//添加图片
+                if(position==BitmapList.size()-1&&SendingImgList.size()!=6){//添加图片
                     Intent intent = new Intent(Intent.ACTION_PICK, null);
                     intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
                     startActivityForResult(intent, 2);
-
                 }else{
                     clickNum++;
                     final Handler handler = new Handler();
@@ -198,7 +203,13 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
                             }else if(clickNum==2){//双击,删除图片
                                 Log.d("", "双击");
                                 showWhetheOrNotToDeleteImg(position);
-
+                                Log.d("sc BitmapList:", String.valueOf(BitmapList.size()));
+                                if(BitmapList.size()==6&&gea==false){
+                                    Bitmap bmp=BitmapFactory.decodeResource(context.getResources(), R.drawable.add_img2);
+                                    BitmapList.add(bmp);
+                                    gridImgView.setAdapter(new MyAdapter(context,BitmapList));
+                                    gea=true;
+                                }
                             }
                             else{
 
@@ -220,6 +231,11 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
             @Override
             public void onClick(View view) {
                 Log.d("", "发布");
+                if(SendingImgList.size()==0)
+                {
+                    Toast.makeText(getApplicationContext(), "请至少插入一张图片", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 new Thread(new Runnable() {
                     public void run() {
                         String Re_State="";
@@ -231,6 +247,7 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
 
                             for(int i=0;i<checkBoxes.length;i++)
                             {
+                                checkBoxName="其他";
                                 if(checkBoxes[i].isChecked())
                                 {
                                     if(i==0)
@@ -241,6 +258,7 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
                                         checkBoxName="寻物启事";
                                     else
                                         checkBoxName="其他";
+                                    break;
                                 }
 
                             }
@@ -269,7 +287,7 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
                                     FileOutputStream fos = null;
                                     try {
                                         fos = new FileOutputStream(Cache_Temp_PATH +String.valueOf(i)+".jpg");
-                                        SendingImgList.get(i).compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                                        SendingImgList.get(i).compress(Bitmap.CompressFormat.JPEG, 50, fos);
                                         fos.flush();
                                     } catch (FileNotFoundException e) {
                                         e.printStackTrace();
@@ -312,7 +330,6 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
 
                             DataInputStream inputStream=new DataInputStream(socket.getInputStream());
 
-
                             System.out.println("接收服务器的数据");
                             Re_State=inputStream.readUTF();
 
@@ -325,8 +342,6 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
                             System.out.println("发送异常");
                             e.printStackTrace();
                         }
-
-
 
                         //Socket socket = new Socket(HOST, PORT);
 
@@ -366,13 +381,10 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
                 options.inSampleSize = 2;
                 Bitmap bitmap_Pic = BitmapFactory.decodeFile(getRealFilePath(this, uri), options);
 
-
-
                 EnlargeImage.add(uri);
 
-
                 //if(SendingImgList.size()==0)
-                    SendingImgList.add(bitmap_Pic);
+                SendingImgList.add(bitmap_Pic);
 //                else
 //                    SendingImgList.add(SendingImgList.size()-1,bitmap_Pic);
 
@@ -388,17 +400,20 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
                 if(ScaleBitmap.getHeight()>ScaleBitmap.getWidth()){
                     //比较高
                     showPic = Bitmap.createBitmap(ScaleBitmap, 0, ScaleBitmap.getHeight()/2-150, 300, 300);
-
                 }
                 else{
                     showPic = Bitmap.createBitmap(ScaleBitmap, ScaleBitmap.getWidth()/2-150, 0, 300, 300);
                 }
 
-
-
-                BitmapList.add(BitmapList.size()-1,showPic);
+                if(BitmapList.size()==6){
+                    BitmapList.remove(5);
+                    BitmapList.add(BitmapList.size(),showPic);
+                    gea=false;
+                }
+                else {
+                    BitmapList.add(BitmapList.size() - 1, showPic);
+                }
                 //BitmapList.add(showPic);
-
 
                 gridImgView.setAdapter(new MyAdapter(this,BitmapList));
 
@@ -418,7 +433,7 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                SendingImgList.remove(position-1);
+                SendingImgList.remove(position-1<0?0:position-1);
                 BitmapList.remove(position);
                 gridImgView.setAdapter(new MyAdapter(getApplicationContext(),BitmapList));
 
@@ -440,8 +455,6 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
 
         builder.create().show();
     }
-
-
 
     //url
     public static String getRealFilePath(final Context context, final Uri uri) {
@@ -570,8 +583,7 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
         // 固定列宽，有多少列
         int col = 3;// listView.getNumColumns();
         int totalHeight = 0;
-        // i每次加4，相当于listAdapter.getCount()小于等于4时 循环一次，计算一次item的高度，
-        // listAdapter.getCount()小于等于8时计算两次高度相加
+
         for (int i = 0; i < listAdapter.getCount(); i += col) {
             // 获取listview的每一个item
             View listItem = listAdapter.getView(i, null, listView);
@@ -590,7 +602,6 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
         listView.setLayoutParams(params);
     }
 
-
     private void Show_Release_Success() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
@@ -606,6 +617,8 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
                 });
         builder.create().show();
     }
+
+
 
     private void Show_Release_Err() {
 
