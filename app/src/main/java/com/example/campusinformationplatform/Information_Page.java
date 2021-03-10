@@ -104,7 +104,7 @@ public class Information_Page extends Fragment {
             public void onRefresh(PullToRefreshBase<ListView> refreshView) {
 
                 if (refreshView.isHeaderShown()) {
-                    Toast.makeText(context, "下拉刷新", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context, "下拉刷新", Toast.LENGTH_SHORT).show();
                     //下拉刷新 业务代码
 
                     RefreshView(1);
@@ -118,7 +118,7 @@ public class Information_Page extends Fragment {
 
 
                 } else {
-                    Toast.makeText(context, "上拉加载更多", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context, "上拉加载更多", Toast.LENGTH_SHORT).show();
                     //上拉加载更多 业务代码
                     Thread infThread = new Thread(new Runnable() {
                         public void run() {

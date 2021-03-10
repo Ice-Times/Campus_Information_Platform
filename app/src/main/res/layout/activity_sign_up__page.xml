@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="13dp"
         android:layout_marginLeft="13dp"
-        android:layout_marginTop="55dp"
+        android:layout_marginTop="40dp"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -213,7 +213,7 @@
         android:id="@+id/Sign_Up_Bt"
         android:layout_width="230dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="68dp"
+        android:layout_marginTop="48dp"
         android:background="@drawable/button_transparent"
         android:text="注册"
         android:textSize="18sp"

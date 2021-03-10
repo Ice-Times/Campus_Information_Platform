@@ -20,6 +20,8 @@ public class Status {
     public static final String SendMessage_State="Send_Message_Msg";//向服务器发送留言
     public static final String GetMessage_State="Send_GetMessage_Msg";//向服务器请求留言
 
+    public static final String SendUpdateRelease_State="Send_UpdateRelease_Msg";//向服务器发送更新
+
     public static final String SendForgetPassword_State="Send_ForgetPassword_Msg";//向服务器请求更改密码
     public static final String Re_ForgetPassword_Username_Exist_State="Username_Exist";//用户存在
 
@@ -43,6 +45,9 @@ public class Status {
 
     public static final String Re_SignUp_Success = "SignUp_Success";// 注册成功
     public static final String Re_SignIn_Success = "SignIn_Success";// 登录成功
+
+    public static final String Re_Update_Success ="Update_Success";//更新成功
+    public static final String Re_Update_Err ="Update_Err";//更新失败
 
     public static final String Re_SignUp_UserName_Repeat_Err = "UserName_Repeat_Err";// 用户名存在注册失败
 

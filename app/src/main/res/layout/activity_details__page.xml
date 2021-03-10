@@ -124,7 +124,8 @@
                     android:id="@+id/Details_PicRelease3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center" />
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp" />
 
                 <ImageView
                     android:id="@+id/Details_PicRelease4"
@@ -137,13 +138,15 @@
                     android:id="@+id/Details_PicRelease5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal" />
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp" />
 
                 <ImageView
                     android:id="@+id/Details_PicRelease6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal" />
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp" />
 
             </LinearLayout>
 
@@ -151,6 +154,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -159,7 +163,7 @@
                     android:layout_height="wrap_content"
                     android:text="留言"
                     android:textColor="#424242"
-                    android:textSize="25sp" />
+                    android:textSize="29sp" />
 
                 <TextView
                     android:id="@+id/textView5"
@@ -227,6 +231,7 @@
             android:layout_width="80dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="@drawable/releasebutton_transparent"
             android:text="发布" />
     </LinearLayout>
 

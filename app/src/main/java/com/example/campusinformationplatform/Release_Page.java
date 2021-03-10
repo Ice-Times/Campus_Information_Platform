@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
@@ -97,6 +98,8 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
         setContentView(R.layout.activity_release__page);
 
         context=getApplicationContext();
+
+
 
         gv = (Global_Value) getApplication();
         HOST=gv.getHost();
@@ -227,6 +230,9 @@ public class Release_Page extends AppCompatActivity implements CompoundButton.On
         });
 
         Button Release_Bt=(Button)findViewById(R.id.Release_Bt);
+
+        //Release_Bt.setBackgroundColor(Color.TRANSPARENT); //背景透明
+        Release_Bt.getBackground().setAlpha(200); //int 在0-255之间, 设置半透明
         Release_Bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

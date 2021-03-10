@@ -9,7 +9,7 @@
     <fragment
         android:id="@+id/navigation_information"
         android:name="com.example.campusinformationplatform.Information_Page"
-        android:label="信息平台"
+        android:label="推荐信息"
         tools:layout="@layout/activity_information_page" />
 
 

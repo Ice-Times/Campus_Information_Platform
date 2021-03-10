@@ -27,6 +27,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -39,11 +42,16 @@ import org.json.JSONObject;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UpdateRelease extends AppCompatActivity {
+public class UpdateRelease extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
     private Global_Value gv;
 
     //网络端口
@@ -82,11 +90,23 @@ public class UpdateRelease extends AppCompatActivity {
     int clickNum=0;
     //描述中最大输入字数
     private int MaxInputWords = 500;
+
+    private CheckBox[] checkBoxes=new CheckBox[4];
+
+    private ArrayList<Uri> EnlargeImage = new ArrayList<Uri>();
+    private boolean gea=false;
+
+    private Context context;
+
+    //缓存
+    private String Cache_Temp_PATH;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_release);
 
+
+        context=getApplicationContext();
         gv = (Global_Value) getApplication();
 
         HOST = gv.getHost();
@@ -113,6 +133,18 @@ public class UpdateRelease extends AppCompatActivity {
         });
 
 
+        Cache_Temp_PATH=gv.getCachePath()+"/temp";
+
+
+        checkBoxes[0] = (CheckBox) findViewById(R.id.Update_cb1);//二手交易
+        checkBoxes[1] = (CheckBox) findViewById(R.id.Update_cb2);//失物招领
+        checkBoxes[2] = (CheckBox) findViewById(R.id.Update_cb3);//寻物启事
+        checkBoxes[3] = (CheckBox) findViewById(R.id.Update_cb4);//其他
+
+        checkBoxes[0].setOnCheckedChangeListener(this);
+        checkBoxes[1].setOnCheckedChangeListener(this);
+        checkBoxes[2].setOnCheckedChangeListener(this);
+        checkBoxes[3].setOnCheckedChangeListener(this);
 
 
         Thread infThread=new Thread(new Thread(new Runnable() {
@@ -136,7 +168,7 @@ public class UpdateRelease extends AppCompatActivity {
                     socket.close();
 
 
-                    socket = new Socket(HOST, PORT);
+                    socket = new Socket(HOST, PORT+5);
                     DataInputStream inputStream = new DataInputStream(socket.getInputStream());
 
                     msg = "";
@@ -164,17 +196,24 @@ public class UpdateRelease extends AppCompatActivity {
                     Picture_num=Json_msg.getString("picture_num");
 
 
-
-
-
-
-
                     Handler mainHandler = new Handler(Looper.getMainLooper());
                     mainHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             UpdateTitle.setText(Title);
                             UpdateDescribe.setText(ddescribe);
+
+                            if(Type.equals("二手交易")){
+                                checkBoxes[0].setChecked(true);
+                            }else if(Type.equals("失物招领")){
+                                checkBoxes[1].setChecked(true);
+                            }else if(Type.equals("寻物启事")){
+                                checkBoxes[2].setChecked(true);
+                            }else if(Type.equals("其他")){
+                                checkBoxes[3].setChecked(true);
+                            }else{
+
+                            }
 
                         }
                     });
@@ -211,10 +250,10 @@ public class UpdateRelease extends AppCompatActivity {
                         System.out.println("fs的数据:"+smsg);
                         outputStream.flush();
 
-                        outputStream.close();
-                        socket.close();
+                       //outputStream.close();
+                        //socket.close();
 
-                        socket = new Socket(HOST, PORT+1);
+                        //socket = new Socket(HOST, PORT+1);
                         DataInputStream inputStream = new DataInputStream(socket.getInputStream());
 
                         try {
@@ -232,8 +271,7 @@ public class UpdateRelease extends AppCompatActivity {
                             socket.close();
 
                             Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-
-
+                            SendingImgList.add(bitmap);
                             final Bitmap showPic;
                             if(bitmap.getHeight()>bitmap.getWidth()){
                                 //比较高
@@ -243,20 +281,16 @@ public class UpdateRelease extends AppCompatActivity {
                             else{
                                 showPic = Bitmap.createBitmap(bitmap, bitmap.getWidth()/2-150, 0, 300, 300);
                             }
-
-
                             Handler mainHandler = new Handler(Looper.getMainLooper());
                             mainHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
                                     BitmapList.add(BitmapList.size()-1,showPic);
                                     adapt.notifyDataSetInvalidated();
+                                    setListViewHeightBasedOnChildren(gridImgView);
 
                                 }
                             });
-
-
-
 
                             System.out.println("接收cg");
 
@@ -330,9 +364,6 @@ public class UpdateRelease extends AppCompatActivity {
         });
 
 
-
-
-
         gridImgView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -341,11 +372,10 @@ public class UpdateRelease extends AppCompatActivity {
                 // TODO Auto-generated method stub
                 Log.d(String.valueOf(position), "onItemClick: ");
 
-                if(position==BitmapList.size()-1){//添加图片
+                if(position==BitmapList.size()-1&&SendingImgList.size()!=6){//添加图片
                     Intent intent = new Intent(Intent.ACTION_PICK, null);
                     intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
                     startActivityForResult(intent, 2);
-
                 }else{
                     clickNum++;
                     final Handler handler = new Handler();
@@ -355,15 +385,16 @@ public class UpdateRelease extends AppCompatActivity {
                             if (clickNum == 1) {//单击,放大图片
                                 Log.d("", "单击");
 
- //                               gv.setEnlargeImage(EnlargeImage);
-
-//                                Intent i = new Intent(Release_Page.this , EnlargeImg_Page.class);
-//                                startActivity(i);
-
                             }else if(clickNum==2){//双击,删除图片
                                 Log.d("", "双击");
                                 showWhetheOrNotToDeleteImg(position);
-
+                                Log.d("sc BitmapList:", String.valueOf(BitmapList.size()));
+                                if(BitmapList.size()==6&&gea==false){
+                                    Bitmap bmp=BitmapFactory.decodeResource(context.getResources(), R.drawable.add_img2);
+                                    BitmapList.add(bmp);
+                                    gridImgView.setAdapter(new MyAdapter(context,BitmapList));
+                                    gea=true;
+                                }
                             }
                             else{
 
@@ -374,11 +405,151 @@ public class UpdateRelease extends AppCompatActivity {
                         }
                     },300);
                 }
-
-
-
             }
         });
+
+
+        Button Update_Release_Bt=(Button)findViewById(R.id.Update_Release_Bt);
+        Update_Release_Bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("", "更新");
+                if(SendingImgList.size()==0)
+                {
+                    Toast.makeText(getApplicationContext(), "请至少插入一张图片", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                new Thread(new Runnable() {
+                    public void run() {
+                        String Re_State="";
+                        try{
+
+                            String title=UpdateTitle.getText().toString();
+                            String describe=UpdateDescribe.getText().toString();
+                            String checkBoxName="";
+
+                            for(int i=0;i<checkBoxes.length;i++)
+                            {
+                                checkBoxName="其他";
+                                if(checkBoxes[i].isChecked())
+                                {
+                                    if(i==0)
+                                        checkBoxName="二手交易";
+                                    else if(i==1)
+                                        checkBoxName="失物招领";
+                                    else if(i==2)
+                                        checkBoxName="寻物启事";
+                                    else
+                                        checkBoxName="其他";
+                                    break;
+                                }
+
+                            }
+
+                            Socket socket = new Socket(HOST, PORT);
+
+                            String state=Status.SendUpdateRelease_State;
+
+                            try {
+                                JSONObject Sending=new JSONObject();
+                                Sending.put("releaseid",gv.getUpdate_Releaseid());
+                                Sending.put("UserName", gv.getUserName());
+                                Sending.put("Status", state);
+                                Sending.put("Type", checkBoxName);
+                                Sending.put("Title", title);
+                                Sending.put("Describe", describe);
+                                Sending.put("NumOfImg", String.valueOf(SendingImgList.size()));
+
+                                String  result=Sending.toString();
+
+                                //写入文字
+                                DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
+                                outputStream.writeUTF(result);
+
+                                //传输图片
+                                for(int i=0;i<SendingImgList.size();i++){
+                                    FileOutputStream fos = null;
+                                    try {
+                                        fos = new FileOutputStream(Cache_Temp_PATH +String.valueOf(i)+".jpg");
+                                        SendingImgList.get(i).compress(Bitmap.CompressFormat.JPEG, 50, fos);
+                                        fos.flush();
+                                    } catch (FileNotFoundException e) {
+                                        e.printStackTrace();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    } finally {
+                                        try {
+                                            if (fos != null) {
+                                                fos.close();
+                                            }
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                    File Temp_Img = new File(Cache_Temp_PATH+String.valueOf(i)+".jpg");
+                                    if (!Temp_Img.exists()) {
+
+                                        Log.e("", String.valueOf(i)+".jpg"+"不存在");
+
+                                    }
+                                    // Temp_Img = new File(Cache_Temp_PATH + String.valueOf(i)+".jpg");
+                                    outputStream.writeLong(Temp_Img.length());
+                                    byte[] data = new byte[(int) Temp_Img.length()];
+                                    FileInputStream inputStream = new FileInputStream(Temp_Img);
+                                    inputStream.read(data);
+
+                                    outputStream.write(data);
+                                    inputStream.close();
+
+                                }
+                                outputStream.flush();
+                                //outputStream.close();
+
+                            }catch(Exception e){
+                                System.out.println("发送异常");
+                                e.printStackTrace();
+                            }
+
+                            //socket.close();
+
+                            DataInputStream inputStream=new DataInputStream(socket.getInputStream());
+
+                            System.out.println("接收服务器的数据");
+                            Re_State=inputStream.readUTF();
+
+                            Log.d("服务器发送的数据为 ", Re_State);
+
+                            inputStream.close();
+                            socket.close();
+
+                        }catch(Exception e){
+                            System.out.println("发送异常");
+                            e.printStackTrace();
+                        }
+
+                        //Socket socket = new Socket(HOST, PORT);
+
+                        Handler mainHandler = new Handler(Looper.getMainLooper());
+                        final String finalRe_State = Re_State;
+                        mainHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                if(finalRe_State.equals(Status.Re_Update_Success))
+                                    Show_Release_Success();
+                                else
+                                    Show_Release_Err();
+
+                            }
+                        });
+
+
+
+                    }
+                }).start();
+            }
+        });
+
 
     }
 
@@ -395,8 +566,6 @@ public class UpdateRelease extends AppCompatActivity {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inSampleSize = 2;
                 Bitmap bitmap_Pic = BitmapFactory.decodeFile(getRealFilePath(this, uri), options);
-
-
 
                 //if(SendingImgList.size()==0)
                // SendingImgList.add(bitmap_Pic);
@@ -497,7 +666,7 @@ public class UpdateRelease extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                //SendingImgList.remove(position-1);
+                SendingImgList.remove(position-1);
                 BitmapList.remove(position);
                 gridImgView.setAdapter(new UpdateRelease.MyAdapter(getApplicationContext(),BitmapList));
 
@@ -519,8 +688,6 @@ public class UpdateRelease extends AppCompatActivity {
 
         builder.create().show();
     }
-
-
 
 
     private class MyAdapter extends BaseAdapter {
@@ -594,4 +761,52 @@ public class UpdateRelease extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+        Log.d("111", "onCheckedChanged: ");
+        if(b) {
+            for (int i = 0; i < checkBoxes.length; i++) {
+                //不等于当前选中的就变成false
+                if (checkBoxes[i].getText().toString().equals(compoundButton.getText().toString())) {
+                    checkBoxes[i].setChecked(true);
+                } else {
+                    checkBoxes[i].setChecked(false);
+                }
+            }
+        }
+    }
+
+
+
+    private void Show_Release_Success() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setMessage("发布成功").setNegativeButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //ToDo: 你想做的事情
+                        Intent intent = new Intent(UpdateRelease.this , ReleaseSelf_Page.class);
+                        intent.putExtra("Inf","Refersh");
+                        startActivity(intent);
+                        dialogInterface.dismiss();
+                    }
+                });
+        builder.create().show();
+    }
+
+
+
+    private void Show_Release_Err() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setMessage("发布失败").setNegativeButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //ToDo: 你想做的事情
+                        dialogInterface.dismiss();
+                    }
+                });
+        builder.create().show();
+    }
 }

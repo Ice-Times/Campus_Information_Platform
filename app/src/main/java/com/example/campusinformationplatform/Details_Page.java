@@ -176,6 +176,7 @@ public class Details_Page extends AppCompatActivity {
 
         ReleaseMessage_Bt = (Button) findViewById(R.id.ReleaseMessage_Bt);
 
+        ReleaseMessage_Bt.setEnabled(false);
         ReleaseMessage_Bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

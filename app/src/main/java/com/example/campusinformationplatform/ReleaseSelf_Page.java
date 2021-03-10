@@ -301,8 +301,6 @@ public class ReleaseSelf_Page extends AppCompatActivity {
 
                     //outputStream.close();
                     //socket.close();
-
-
                     //
 
                     //接收状态
@@ -350,7 +348,6 @@ public class ReleaseSelf_Page extends AppCompatActivity {
                                 }catch (JSONException e) {
                                 e.printStackTrace();
                             }
-
                                 listItem.add(item);
 
                             }
@@ -395,7 +392,6 @@ public class ReleaseSelf_Page extends AppCompatActivity {
                                 JSONObject Sending = new JSONObject();
 
                                 Sending.put("Status", state);
-
                                 Sending.put("releaseid",Id);
 
                                 //写入String
@@ -416,7 +412,6 @@ public class ReleaseSelf_Page extends AppCompatActivity {
                         }
                     }).start();
 
-
                     listItem.remove(position);
 
                     adapt.notifyDataSetChanged();
@@ -425,7 +420,7 @@ public class ReleaseSelf_Page extends AppCompatActivity {
 
                 else if (item.getTitle().equals("编辑")){
 
-                    //gv.setUpdate_Releaseid();
+                    gv.setUpdate_Releaseid((String)listItem.get(position).get("releaseid"));
                     Intent i = new Intent(ReleaseSelf_Page.this , UpdateRelease.class);
                     startActivity(i);
 

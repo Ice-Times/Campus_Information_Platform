@@ -138,13 +138,9 @@ public class Personal_Page  extends Fragment {
                     mainHandler.post(new Runnable() {
                         @Override
                         public void run() {
-
                             PersonalPage_UserNumOfInf.setText("发布： "+NumOfRelease+"    留言： "+NumOfMessage);
-
                         }
                     });
-
-
 
 
                 } catch (Exception e) {
@@ -194,10 +190,6 @@ public class Personal_Page  extends Fragment {
 
             }
         });
-
-
-
-
 
         return view;
     }

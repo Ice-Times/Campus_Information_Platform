@@ -73,6 +73,7 @@ public class ForgetPassword_Page extends AppCompatActivity {
             public void onClick(View v) {
                 new Thread(new Runnable() {
                     public void run() {
+                        String s="";
                         try {
                             String state = Status.SendForgetPassword_State;
                             Socket socket = new Socket(HOST, PORT);
@@ -91,8 +92,8 @@ public class ForgetPassword_Page extends AppCompatActivity {
 
                                 outputStream.flush();
 
-                                outputStream.close();
-                                socket.close();
+                                //outputStream.close();
+                                //socket.close();
 
                                 System.out.println("登录信息：" + result);
                             }catch(Exception e){
@@ -100,17 +101,7 @@ public class ForgetPassword_Page extends AppCompatActivity {
                                 e.printStackTrace();
                             }
 
-                        } catch (SocketException e){
-                            e.printStackTrace();
-                        }catch (IOException ex) {
-                            ex.printStackTrace();
-                        }
-
-                        //接收状态
-                        Socket socket = null;
-                        String s="";
-                        try {
-                            socket = new Socket(HOST, PORT);
+                            //socket = new Socket(HOST, PORT);
 
                             DataInputStream inputStream=new DataInputStream(socket.getInputStream());
 
@@ -123,14 +114,19 @@ public class ForgetPassword_Page extends AppCompatActivity {
                                 e.printStackTrace();
                             }
 
-                            Log.d("服务器发送的数据为 ", s);
-
                             inputStream.close();
                             socket.close();
-
-                        } catch (IOException e) {
+                        } catch (SocketException e){
                             e.printStackTrace();
+                        }catch (IOException ex) {
+                            ex.printStackTrace();
                         }
+
+                        //接收状态
+                        //Socket socket = null;
+
+
+                        Log.d("服务器发送的数据为 ", s);
 
 
                        try {
@@ -156,7 +152,7 @@ public class ForgetPassword_Page extends AppCompatActivity {
                                new Handler(context.getMainLooper()).post(new Runnable() {
                                    @Override
                                    public void run() {
-
+                                       Confirm_Bt.setEnabled(false);
                                        Confirm_Bt2.setEnabled(true);
                                        Forget_Sec_Qes.setText(user_sec_qes);
                                    }
